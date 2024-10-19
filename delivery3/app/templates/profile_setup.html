@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Up Your Profile</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Set Up Your Profile</h1>
+        <p class="form-required-notice">* = required fields</p>
+        <form id="profile-setup-form">
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username">Username <span class="required-asterisk">*</span></label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <!-- School -->
+            <div class="form-group">
+                <label for="school">School <span class="required-asterisk">*</span></label>
+                <input type="text" id="school" name="school" required>
+            </div>
+
+            <!-- Graduation Year -->
+            <div class="form-group">
+                <label for="graduation-year">Graduation Year <span class="required-asterisk">*</span></label>
+                <input type="number" id="graduation-year" name="graduation_year" min="2020" max="2030" required>
+            </div>
+
+            <!-- Major 1 -->
+            <div class="form-group">
+                <label for="major1">Major 1 <span class="required-asterisk">*</span></label>
+                <input type="text" id="major1" name="major1" required>
+            </div>
+
+            <!-- Major 2 (Optional) -->
+            <div class="form-group">
+                <label for="major2">Second Major (Optional)</label>
+                <input type="text" id="major2" name="major2">
+            </div>
+
+            <!-- Profile Picture Upload -->
+            <div class="form-group">
+                <label for="profile-pic-upload">Profile Picture <span class="required-asterisk">*</span></label>
+                <input type="file" id="profile-pic-upload" name="profile_picture" accept="image/*" required>
+            </div>
+
+            <button type="submit">Create Profile</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('profile-setup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Here you would typically send the form data to your server
+            console.log('Profile setup submitted');
+            // You can add form validation and submission logic here
+        });
+    </script>
+</body>
+</html>

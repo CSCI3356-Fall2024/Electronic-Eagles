@@ -6,6 +6,7 @@ from django.dispatch import receiver
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     username = models.CharField(max_length=100)
+    name = models.charField(max_length=100)
     school = models.CharField(max_length=100)
     graduation_year = models.IntegerField()
     major1 = models.CharField(max_length=100)
@@ -18,5 +19,5 @@ class UserProfile(models.Model):
     
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        UserProfile.objects.create(user=instance, admin=False)
     instance.userprofile.save()

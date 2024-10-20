@@ -35,3 +35,26 @@ def profile_setup(request):
 def logout_view(request):
     logout(request)
     return redirect('google_login')
+
+@login_required
+def profile_view(request):
+    try:
+        # Try to get the user's profile
+        user_profile = UserProfile.objects.get(user=request.user)
+        
+        # Check if profile is complete (you can define what "complete" means)
+        if not user_profile.school or not user_profile.graduation_year:
+            return redirect('profile_setup')  # Redirect to profile setup if incomplete
+        
+        # Determine the user's role
+        role = 'Supervisor' if user_profile.is_supervisor else 'Student'
+        
+        # Pass the profile and role to the template
+        return render(request, 'profile.html', {'user_profile': user_profile, 'role': role})
+    
+    except UserProfile.DoesNotExist:
+        # Redirect to profile setup if the profile doesn't exist
+        return redirect('profile_setup')
+
+def home_view(response):
+    return render(response, "base.html")

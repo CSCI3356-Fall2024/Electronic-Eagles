@@ -23,11 +23,12 @@ from app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('', views.google_login, name='google_login'),
+    path('google', views.google_login, name='google_login'),
     path('profile-setup/', views.profile_setup, name='profile_setup'),
     path('logout/', views.logout_view, name='logout'),
     path('accounts/google/login/', views.google_login, name='google_login'),
     path('profile/', views.profile_view, name='profile'),
+    path('', views.home_view, name='home_view')
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- templates/profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Info Page</title>
+    <link rel="stylesheet" href="{% static 'Page1.css' %}">
+</head>
+<body>
+    <!-- Banner Section -->
+    <div class="banner">
+        <!-- Profile Picture Preview Section -->
+        <img id="profile-pic-preview" class="profile-picture" src="{{ user_profile.profile_picture.url }}" alt="Profile Picture Preview">
+        <h1>{{ user_profile.username }}</h1>
+
+        <!-- Quick Stats Section -->
+        <div class="quick-stats">
+            <!-- Number of Friends Stat -->
+            <div class="stat">
+                <div class="stat-number">150</div>
+                <div class="stat-description">Friends</div>
+            </div>
+
+            <!-- Total Points Earned Stat -->
+            <div class="stat">
+                <div class="stat-number">2300</div>
+                <div class="stat-description">Total Points</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Profile Details</h2>
+        <p class="form-required-notice">* = required fields</p>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Username -->
+            <div class="form-group">
+                <label for="id_username">Username <span class="required-asterisk" aria-hidden="true">*</span></label>
+                <input type="text" id="id_username" name="username" value="{{ form.username.value }}" placeholder="Enter your username" required aria-required="true">
+            </div>
+
+            <!-- School -->
+            <div class="form-group">
+                <label for="id_school">School <span class="required-asterisk" aria-hidden="true">*</span></label>
+                <input type="text" id="id_school" name="school" value="{{ form.school.value }}" placeholder="Enter your school" required aria-required="true">
+            </div>
+
+            <!-- Graduation Year -->
+            <div class="form-group">
+                <label for="id_graduation_year">Graduation Year <span class="required-asterisk" aria-hidden="true">*</span></label>
+                <input type="number" id="id_graduation_year" name="graduation_year" value="{{ form.graduation_year.value }}" placeholder="Enter your graduation year" min="2020" max="2030" required aria-required="true">
+            </div>
+
+            <!-- Major 1 -->
+            <div class="form-group">
+                <label for="id_major1">Major 1 <span class="required-asterisk" aria-hidden="true">*</span></label>
+                <input type="text" id="id_major1" name="major1" value="{{ form.major1.value }}" placeholder="Enter your first major" required aria-required="true">
+            </div>
+
+            <!-- Major 2 (Optional) -->
+            <div class="form-group">
+                <label for="id_major2">Second Major (Optional)</label>
+                <input type="text" id="id_major2" name="major2" value="{{ form.major2.value }}" placeholder="Enter your second major (optional)">
+            </div>
+
+            <!-- Profile Picture Upload -->
+            <div class="form-group">
+                <label for="id_profile_picture">Profile Picture <span class="required-asterisk" aria-hidden="true">*</span></label>
+                <input type="file" id="id_profile_picture" name="profile_picture" accept="image/*">
+            </div>
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+
+    <!-- JavaScript to handle profile picture preview -->
+    <script>
+        const profilePicInput = document.getElementById('id_profile_picture');
+        const profilePicPreview = document.getElementById('profile-pic-preview');
+
+        profilePicInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePicPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

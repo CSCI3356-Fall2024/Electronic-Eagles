@@ -18,7 +18,7 @@ class CustomSignupForm(SignupForm):
         required=True,
         widget=forms.NumberInput(attrs={'min': 2020, 'max': 2030})
     )
-    major1 = forms.CharField(max_length=100, label='Major 1', required=True)
+    major1 = forms.CharField(max_length=100, label='Primary Major', required=True)
     major2 = forms.CharField(max_length=100, label='Second Major (Optional)', required=False)
     profile_picture = forms.ImageField(label='Profile Picture', required=False)
 

@@ -27,6 +27,7 @@ urlpatterns = [
     path('profile-setup/', views.profile_setup, name='profile_setup'),
     path('logout/', views.logout_view, name='logout'),
     path('accounts/google/login/', views.google_login, name='google_login'),
+    path('profile/', views.profile_view, name='profile'),
 ]
 
 if settings.DEBUG:

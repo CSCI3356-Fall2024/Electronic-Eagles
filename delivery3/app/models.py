@@ -11,6 +11,7 @@ class UserProfile(models.Model):
     major1 = models.CharField(max_length=100)
     major2 = models.CharField(max_length=100, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    admin = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username

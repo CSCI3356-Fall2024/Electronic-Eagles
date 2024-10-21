@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     username = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     school = models.CharField(max_length=100)
-    graduation_year = models.IntegerField()
+    graduation_year = models.IntegerField(default=0000)
     major1 = models.CharField(max_length=100)
     major2 = models.CharField(max_length=100, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)

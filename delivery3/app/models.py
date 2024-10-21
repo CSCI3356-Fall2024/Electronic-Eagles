@@ -6,7 +6,7 @@ from django.dispatch import receiver
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     username = models.CharField(max_length=100)
-    name = models.charField(max_length=100)
+    name = models.CharField(max_length=100)
     school = models.CharField(max_length=100)
     graduation_year = models.IntegerField()
     major1 = models.CharField(max_length=100)
@@ -16,6 +16,9 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    def is_complete(self):
+        return all([self.username, self.name, self.school, self.graduation_year, self.major1])
     
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:

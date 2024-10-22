@@ -9,7 +9,7 @@ from app import forms
 
 @login_required
 def landing_page(request):
-    if not request.user.userprofile.is_profile_complete():
+    if not request.user.userprofile.is_complete():
         return redirect('profile_setup')
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)

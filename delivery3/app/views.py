@@ -8,12 +8,12 @@ from .forms import UserProfileForm
 def landing_page(request):
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
-        if profile.is_complete():
-            return render(request, 'landing_page.html', {'profile': profile})
+        if profile.is_complete():  # Check if the profile is complete
+            return render(request, 'base.html')  # Go to landing page (base.html)
         else:
-            return redirect('profile_setup')
+            return redirect('profile_setup')  # Redirect to profile setup
     else:
-        return redirect('account_login')
+        return render(request, 'base.html')
 
 @login_required
 def profile_setup(request):
@@ -22,9 +22,7 @@ def profile_setup(request):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user = request.user
-            profile.save()
+            form.save()
             return redirect('landing_page')
     else:
         form = UserProfileForm(instance=profile)

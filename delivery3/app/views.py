@@ -8,28 +8,44 @@ from .models import UserProfile, NewsItem, CommunityPost
 from app import forms
 
 def landing_page(request):
+    if request.user.is_authenticated:
+        profile, created = UserProfile.objects.get_or_create(user=request.user)
+        if not profile.is_complete:
+            return redirect('profile_setup')
+        else:
+            return redirect('profile')
     return render(request, 'base.html')
 
-@login_required
-def profile_setup(request):
-    # Check if the profile is already complete
-    if request.user.userprofile.is_profile_complete():
-        return redirect('landing_page')
-
-    if request.method == 'POST':
-        form = forms.CustomSignupForm(request.POST, instance=request.user.userprofile)
-        if form.is_valid():
-            form.save()
-            return redirect('landing_page')
-    else:
-        form = forms.CustomSignupForm(instance=request.user.userprofile)
-    return render(request, 'profilesetup.html', {'form': form})
 
 @login_required
 def profile_view(request):
     profile = get_object_or_404(UserProfile, user=request.user)
-    role = 'Admin' if profile.admin else 'User'
-    return render(request, 'profile.html', {'user_profile': profile, 'role': role})
+    return render(request, 'profile.html', {'profile': profile})
+
+def first(request):
+    complete = request.user.is_complete
+
+    if complete == True:
+        return redirect('landing_page')
+    else:
+        return redirect('profile_setup')
+
+@login_required
+def profile_setup(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = forms.UserProfileForm(request.POST, instance=request.user.userprofile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.is_complete = True
+            profile.save()
+            return redirect('profile')
+    else:
+        form = forms.UserProfileForm(instance=request.user.userprofile)
+    return render(request, 'profile_setup.html', {'form': form})
+
 
 def logout_view(request):
     logout(request)

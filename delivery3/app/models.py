@@ -13,31 +13,8 @@ class UserProfile(models.Model):
     major2 = models.CharField(max_length=100, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     admin = models.BooleanField(default=False)
-    points = models.IntegerField(default=0)
+    is_complete = models.BooleanField(default = False)
 
     def __str__(self):
         return self.user.username
     
-    def is_complete(self):
-        return all([self.username, self.name, self.school, self.graduation_year, self.major1])
-    
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance, admin=False)
-    instance.userprofile.save()
-
-class NewsItem(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title
-
-class CommunityPost(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.author.username}'s post"

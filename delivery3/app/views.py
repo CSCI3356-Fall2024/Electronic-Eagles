@@ -4,7 +4,7 @@ from django.contrib.auth import logout
 from allauth.socialaccount.models import SocialAccount
 from .models import UserProfile
 from .forms import UserProfileForm
-from .models import UserProfile, NewsItem, CommunityPost
+from .models import UserProfile
 from app import forms
 
 def landing_page(request):

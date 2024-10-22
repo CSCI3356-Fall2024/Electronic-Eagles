@@ -11,6 +11,12 @@
             <div class="card shadow">
                 <div class="card-body p-4">
                     <h2 class="text-center mb-4">{{ profile.name }}'s Profile</h2>
+                    {% if user.is_superuser %}
+                    <div class="admin-banner">
+                        <span>This is an admin account</span>
+                        <span class="admin-tag">ADMIN</span>
+                    </div>
+                    {% endif %}
                     <div class="profile-section">
                         <!-- Display profile picture if available -->
                         {% if profile.profile_picture %}

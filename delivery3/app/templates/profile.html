@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Profile - {{ profile.username }}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">{{ profile.name }}'s Profile</h2>
+                    <div class="profile-section">
+                        <!-- Display profile picture if available -->
+                        {% if profile.profile_picture %}
+                            <div class="text-center mb-4">
+                                <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail" style="max-width: 200px;">
+                            </div>
+                        {% else %}
+                            <p class="text-center">No profile picture uploaded.</p>
+                        {% endif %}
+                        
+                        <!-- Display profile details -->
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Username</th>
+                                    <td>{{ profile.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <td>{{ profile.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>School</th>
+                                    <td>{{ profile.school }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Graduation Year</th>
+                                    <td>{{ profile.graduation_year }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Primary Major</th>
+                                    <td>{{ profile.major1 }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Second Major</th>
+                                    <td>{{ profile.major2|default:"N/A" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center">
+                        <a href="{% url 'profile_setup' %}" class="btn btn-primary mt-3">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

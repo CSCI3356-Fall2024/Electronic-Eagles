@@ -7,18 +7,8 @@ from .forms import UserProfileForm
 from .models import UserProfile, NewsItem, CommunityPost
 from app import forms
 
-@login_required
 def landing_page(request):
-    if not request.user.userprofile.is_complete():
-        return redirect('profile_setup')
-    if request.user.is_authenticated:
-        profile, created = UserProfile.objects.get_or_create(user=request.user)
-        if profile.is_complete():  # Check if the profile is complete
-            return render(request, 'base.html')  # Go to landing page (base.html)
-        else:
-            return redirect('profile_setup')  # Redirect to profile setup
-    else:
-        return render(request, 'base.html')
+    return render(request, 'base.html')
 
 @login_required
 def profile_setup(request):

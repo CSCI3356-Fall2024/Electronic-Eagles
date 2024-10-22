@@ -29,10 +29,14 @@
                 </li>
             </ul>
 
-            <!-- Block for Custom Buttons like Google Login -->
-            {% block navbar_buttons %}
-            <a href="{% url 'google_login' %}" class="btn btn-outline-primary">Login with Google</a>
-            {% endblock %}
+            <!-- Conditional Button Logic -->
+            {% if user.is_authenticated %}
+                <!-- Show Logout Button if user is authenticated -->
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger">Logout</a>
+            {% else %}
+                <!-- Show Google Login Button if user is not authenticated -->
+                <a href="{% url 'google_login' %}" class="btn btn-outline-primary">Login with Google</a>
+            {% endif %}
         </div>
     </nav>
 

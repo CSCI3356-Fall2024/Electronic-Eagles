@@ -13,30 +13,12 @@ def landing_page(request):
         return redirect('profile_setup')
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
-        if not profile.is_complete():
-            return redirect('profile_setup')
-        
-        # Fetch data for the template
-        leaderboard = UserProfile.objects.order_by('-points')[:5]
-        news_items = NewsItem.objects.order_by('-date')[:2]
-        community_posts = CommunityPost.objects.order_by('-date')[:2]
-        
-        context = {
-            'profile': profile,
-            'leaderboard': [
-                {
-                    'initials': user.user.username[:2].upper(),
-                    'username': user.user.username,
-                    'points': user.points,
-                    'percentage': (user.points / leaderboard[0].points) * 100
-                } for user in leaderboard
-            ],
-            'news_items': news_items,
-            'community_posts': community_posts,
-        }
-        return render(request, 'landing_page.html', context)
+        if profile.is_complete():  # Check if the profile is complete
+            return render(request, 'base.html')  # Go to landing page (base.html)
+        else:
+            return redirect('profile_setup')  # Redirect to profile setup
     else:
-        return redirect('account_login')
+        return render(request, 'base.html')
 
 @login_required
 def profile_setup(request):

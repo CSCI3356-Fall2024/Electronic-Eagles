@@ -5,7 +5,7 @@ from .models import UserProfile
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['username', 'school', 'graduation_year', 'major1', 'major2', 'profile_picture']
+        fields = ['username', 'name', 'school', 'graduation_year', 'major1', 'major2', 'profile_picture']
         widgets = {
             'graduation_year': forms.NumberInput(attrs={'min': 2020, 'max': 2030}),
         }
@@ -28,6 +28,7 @@ class CustomSignupForm(SignupForm):
 
         # Create or update the user profile
         user_profile, created = UserProfile.objects.get_or_create(user=user)
+        user_profile.name = self.cleaned_data['name']
         user_profile.school = self.cleaned_data['school']
         user_profile.graduation_year = self.cleaned_data['graduation_year']
         user_profile.major1 = self.cleaned_data['major1']

@@ -14,49 +14,50 @@
                     <div class="card-body p-4">
                         <h2 class="text-center mb-4">Set Up Your Profile</h2>
                         <p class="text-center text-muted form-required-notice">* = required fields</p>
-                        <form id="profile-setup-form">
+                        <form id="profile-setup-form" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
                             <!-- Username -->
                             <div class="form-group mb-3">
                                 <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="username" name="username" required>
                             </div>
-
+                        
                             <!-- Name -->
                             <div class="form-group mb-3">
-                                <label for="username" class="form-label">Name <span class="text-danger">*</span></label>
+                                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-
+                        
                             <!-- School -->
                             <div class="form-group mb-3">
                                 <label for="school" class="form-label">School <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="school" name="school" required>
                             </div>
-
+                        
                             <!-- Graduation Year -->
                             <div class="form-group mb-3">
                                 <label for="graduation-year" class="form-label">Graduation Year <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="graduation-year" name="graduation_year" min="2020" max="2030" required>
                             </div>
-
+                        
                             <!-- Major 1 -->
                             <div class="form-group mb-3">
                                 <label for="major1" class="form-label">Major 1 <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="major1" name="major1" required>
                             </div>
-
+                        
                             <!-- Major 2 (Optional) -->
                             <div class="form-group mb-3">
                                 <label for="major2" class="form-label">Second Major (Optional)</label>
                                 <input type="text" class="form-control" id="major2" name="major2">
                             </div>
-
+                        
                             <!-- Profile Picture Upload -->
                             <div class="form-group mb-4">
                                 <label for="profile-pic-upload" class="form-label">Profile Picture <span class="text-danger">*</span></label>
                                 <input type="file" class="form-control" id="profile-pic-upload" name="profile_picture" accept="image/*" required>
                             </div>
-
+                        
                             <button type="submit" class="btn btn-primary w-100">Create Profile</button>
                         </form>
                     </div>
@@ -67,13 +68,5 @@
 
     <!-- Add Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-4AiHUpkz0YcIW3rvoaEwXHqfZYf8R1jpH5TmE98UoDQQ3Btx+joi1RQ1Xysr1w/+"></script>
-    <script>
-        document.getElementById('profile-setup-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            // Here you would typically send the form data to your server
-            console.log('Profile setup submitted');
-            // You can add form validation and submission logic here
-        });
-    </script>
 </body>
 </html>

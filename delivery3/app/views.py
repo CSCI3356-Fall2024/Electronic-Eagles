@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from allauth.socialaccount.models import SocialAccount
 from .models import UserProfile
-from .forms import UserProfileForm
-from .models import UserProfile
+from .forms import UserProfileForm, CampaignForm
+from .models import UserProfile, Campaign
 from app import forms
 
 def landing_page(request):
@@ -50,3 +50,25 @@ def profile_setup(request):
 def logout_view(request):
     logout(request)
     return redirect('landing_page')
+
+def campaign_create_view(request):
+    # Instantiate the form based on POST data if the request is POST; otherwise, instantiate an empty form
+    if request.method == 'POST':
+        form = CampaignForm(request.POST)
+        if form.is_valid():
+            try:
+                # Save the form data to create a new Campaign instance
+                form.save()
+                messages.success(request, "Campaign created successfully!")
+                return redirect('campaign_list')  # Replace with your redirect URL after creation
+            except ValidationError as e:
+                form.add_error(None, e)
+        else:
+            messages.error(request, "There was an error with your submission.")
+    else:
+        form = CampaignForm()
+
+    return render(request, 'campaign_create.html', {'form': form})
+
+
+    

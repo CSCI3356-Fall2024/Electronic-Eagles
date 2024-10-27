@@ -27,6 +27,8 @@ urlpatterns = [
     path('profile-setup/', views.profile_setup, name='profile_setup'),
     path('profile/', views.profile_view, name='profile'),
     path('logout/', views.logout_view, name='logout'),
+    path('campaign/create/', views.campaign_create_view, name='campaign_create'),
+
 ]
 
 if settings.DEBUG:

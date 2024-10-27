@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Edit Campaign - {{ campaign.name }}</h2>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a href="{% url 'active_campaigns' %}" class="btn btn-secondary">Back to Active Campaigns</a>
+    </form>
+</div>
+{% endblock %}

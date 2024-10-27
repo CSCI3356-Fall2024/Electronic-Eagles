@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from allauth.socialaccount.models import SocialAccount
+from django.contrib import messages
+from django.utils import timezone
 from .models import UserProfile
 from .forms import UserProfileForm, CampaignForm
 from .models import UserProfile, Campaign
@@ -60,7 +62,7 @@ def campaign_create_view(request):
                 # Save the form data to create a new Campaign instance
                 form.save()
                 messages.success(request, "Campaign created successfully!")
-                return redirect('campaign_list')  # Replace with your redirect URL after creation
+                return redirect('active_campaigns')  # Replace with your redirect URL after creation
             except ValidationError as e:
                 form.add_error(None, e)
         else:
@@ -69,6 +71,25 @@ def campaign_create_view(request):
         form = CampaignForm()
 
     return render(request, 'campaign_create.html', {'form': form})
+
+# View to list all active campaigns
+def active_campaigns_view(request):
+    today = timezone.now().date()
+    campaigns = Campaign.objects.filter(start_date__lte=today, end_date__gte=today)
+    return render(request, 'active_campaigns.html', {'campaigns': campaigns})
+
+# View to edit a specific campaign
+def edit_campaign_view(request, pk):
+    campaign = get_object_or_404(Campaign, pk=pk)
+    if request.method == 'POST':
+        form = CampaignForm(request.POST, instance=campaign)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Campaign updated successfully!")
+            return redirect('active_campaigns')  # Redirect back to the campaigns list
+    else:
+        form = CampaignForm(instance=campaign)
+    return render(request, 'edit_campaign.html', {'form': form, 'campaign': campaign})
 
 
     

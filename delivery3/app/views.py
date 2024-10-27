@@ -53,16 +53,15 @@ def logout_view(request):
     logout(request)
     return redirect('landing_page')
 
+#LEFT OUT LOGIN REQUIREMENT FOR DEBUGGING
 def campaign_create_view(request):
-    # Instantiate the form based on POST data if the request is POST; otherwise, instantiate an empty form
     if request.method == 'POST':
         form = CampaignForm(request.POST)
         if form.is_valid():
             try:
-                # Save the form data to create a new Campaign instance
                 form.save()
                 messages.success(request, "Campaign created successfully!")
-                return redirect('active_campaigns')  # Replace with your redirect URL after creation
+                return redirect('active_campaigns')  
             except ValidationError as e:
                 form.add_error(None, e)
         else:
@@ -72,13 +71,13 @@ def campaign_create_view(request):
 
     return render(request, 'campaign_create.html', {'form': form})
 
-# View to list all active campaigns
+# List all active campaigns
 def active_campaigns_view(request):
     today = timezone.now().date()
     campaigns = Campaign.objects.filter(start_date__lte=today, end_date__gte=today)
     return render(request, 'active_campaigns.html', {'campaigns': campaigns})
 
-# View to edit a specific campaign
+# Edit a specific campaign
 def edit_campaign_view(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
     if request.method == 'POST':
@@ -86,7 +85,7 @@ def edit_campaign_view(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Campaign updated successfully!")
-            return redirect('active_campaigns')  # Redirect back to the campaigns list
+            return redirect('active_campaigns')  
     else:
         form = CampaignForm(instance=campaign)
     return render(request, 'edit_campaign.html', {'form': form, 'campaign': campaign})

@@ -31,7 +31,7 @@ urlpatterns = [
     path('campaign', views.active_campaigns_view, name='active_campaigns'),
     path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

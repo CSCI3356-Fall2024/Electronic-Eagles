@@ -37,7 +37,7 @@ def profile_setup(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = forms.UserProfileForm(request.POST, instance=request.user.userprofile)
+        form = forms.UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user = request.user

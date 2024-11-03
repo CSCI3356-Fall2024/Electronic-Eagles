@@ -15,8 +15,8 @@ def landing_page(request):
         if not profile.is_complete:
             return redirect('profile_setup')
         else:
-            return redirect('profile')
-    return render(request, 'base.html')
+            return render(request, 'landing_page.html')
+    return render(request, 'landing_page.html')
 
 
 @login_required

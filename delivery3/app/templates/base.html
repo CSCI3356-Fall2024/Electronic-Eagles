@@ -48,9 +48,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Actions</a>
                 </li>
+                {% if user.is_superuser %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'active_campaigns' %}">Campaigns</a>
                 </li>
+                {% endif %}
             </ul>
             
             <div class="ms-auto">

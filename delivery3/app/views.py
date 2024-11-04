@@ -11,6 +11,8 @@ from .models import UserProfile
 from .forms import UserProfileForm, CampaignForm
 from .models import UserProfile, Campaign
 from app import forms
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render, get_object_or_404
 
 
 def landing_page(request):
@@ -145,4 +147,11 @@ def change_admin_status(request):
         return render(request, 'profile.html', {'profile': profile})
     
     return render(request, 'profile.html', {'profile': profile})
+
+@user_passes_test(lambda u: u.is_staff)
+def view_campaign_details(request, pk):
+    campaign = get_object_or_404(Campaign, pk=pk)
+    return render(request, 'campaign_details.html', {
+        'campaign': campaign
+    })
 

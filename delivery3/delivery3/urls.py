@@ -33,6 +33,7 @@ urlpatterns = [
     path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
     path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
     path('change_admin_status/', views.change_admin_status, name='change_admin_status'),
+    path('campaign/<int:pk>/view/', views.view_campaign_details, name='view_campaign_details'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

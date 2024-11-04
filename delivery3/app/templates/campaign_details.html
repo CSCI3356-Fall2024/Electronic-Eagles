@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}
+    View Campaign Details
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="admin-banner">
+                        <span>Campaign Details</span>
+                        <span class="admin-tag">ADMIN</span>
+                    </div>
+                    <h2 class="text-center mb-4">{{ campaign.name }}</h2>
+                    
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <th>Campaign Name</th>
+                                <td>{{ campaign.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Start Date & Time</th>
+                                <td>{{ campaign.start_time }}</td>
+                            </tr>
+                            <tr>
+                                <th>End Date & Time</th>
+                                <td>{{ campaign.end_time }}</td>
+                            </tr>
+                            <tr>
+                                <th>Campaign Description</th>
+                                <td>{{ campaign.description }}</td>
+                            </tr>
+                            <tr>
+                                <th>Points Awarded</th>
+                                <td>{{ campaign.points }}</td>
+                            </tr>
+                            <tr>
+                                <th>Campaign QR Code</th>
+                                <td>
+                                    {% if campaign.qr_code %}
+                                        <img src="{{ campaign.qr_code.url }}" alt="Campaign QR Code" style="width: 150px; height: 150px;">
+                                        <br>
+                                        <a href="{{ campaign.qr_code.url }}" download class="btn btn-sm btn-secondary mt-2">
+                                            Download QR Code
+                                        </a>
+                                    {% else %}
+                                        No QR Code Available
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center mt-4">
+                        <a href="{% url 'active_campaigns' %}" class="btn btn-secondary">Back to Campaigns</a>
+                        {% if not campaign.is_past_campaign %}
+                            <a href="{% url 'edit_campaign' campaign.pk %}" class="btn btn-primary">Edit Campaign</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="admin-footer text-center mt-4">
+    This page is restricted to administrative users only. If you believe you've reached this page in error, please contact IT support.
+</div>
+{% endblock %}

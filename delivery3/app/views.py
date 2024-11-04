@@ -131,12 +131,10 @@ def change_admin_status(request):
         if action == "make_admin":
             user_profile.admin = True
             user.is_superuser = True
-            user.is_staff = True
             messages.success(request, f"{username} has been given admin privileges.")
         elif action == "remove_admin":
             user_profile.admin = False
             user.is_superuser = False
-            user.is_staff = False
             messages.success(request, f"{username}'s admin privileges have been removed.")
 
         user.save()

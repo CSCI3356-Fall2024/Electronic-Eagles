@@ -1,13 +1,58 @@
 {% extends "base.html" %}
 
+{% block title %}
+    Edit Campaign
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center">Edit Campaign - {{ campaign.name }}</h2>
-    <form method="post" class="mt-4">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Save Changes</button>
-        <a href="{% url 'active_campaigns' %}" class="btn btn-secondary">Back to Active Campaigns</a>
-    </form>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="admin-banner">
+                        <span>Campaign Management</span>
+                        <span class="admin-tag">ADMIN</span>
+                    </div>
+                    <h2 class="text-center mb-4">Edit Campaign</h2>
+                    <p class="text-center form-required-notice">All fields are required</p>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><label for="campaign-name">Campaign Name <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="text" id="campaign-name" name="name" class="form-control" value="{{ form.name.value }}" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="start-time">Start Date & Time <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="datetime-local" id="start-time" name="start_time" class="form-control" value="{{ form.start_time.value|date:'Y-m-d\TH:i' }}" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="end-time">End Date & Time <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="datetime-local" id="end-time" name="end_time" class="form-control" value="{{ form.end_time.value|date:'Y-m-d\TH:i' }}" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="description">Campaign Description <span class="required-asterisk">*</span></label></th>
+                                    <td><textarea id="description" name="description" class="form-control" rows="3" required>{{ form.description.value }}</textarea></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="points">Points Awarded <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="number" id="points" name="points" class="form-control" min="0" value="{{ form.points.value }}" required></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="admin-footer text-center mt-4">
+    This page is restricted to administrative users only. If you believe you've reached this page in error, please contact IT support.
 </div>
 {% endblock %}

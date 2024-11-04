@@ -73,16 +73,21 @@ def campaign_create_view(request):
 
 @login_required
 def active_campaigns_view(request):
-    today = timezone.now().date()
-    campaigns = Campaign.objects.filter(start_time__lte=today, end_time__gte=today)
-    return render(request, 'active_campaigns.html', {'campaigns': campaigns})
+    now = timezone.now()
+    active_campaigns = Campaign.objects.filter(
+        start_time__lte=now,
+        end_time__gt=now
+    )
+    inactive_campaigns = Campaign.objects.exclude(
+        pk__in=active_campaigns.values_list('pk', flat=True)
+    )
+    return render(request, 'active_campaigns.html', {
+        'active_campaigns': active_campaigns,
+        'inactive_campaigns': inactive_campaigns
+    })
 
-@login_required
-def actions_view(request):
-    campaigns = Campaign.objects.all()
-    return render(request, 'actions.html', {'campaigns': campaigns})
 
-'''
+
 @login_required
 # Edit a specific campaign
 def edit_campaign_view(request, pk):
@@ -96,7 +101,11 @@ def edit_campaign_view(request, pk):
     else:
         form = CampaignForm(instance=campaign)
     return render(request, 'edit_campaign.html', {'form': form, 'campaign': campaign})
-'''
+
+@login_required
+def actions_view(request):
+    campaigns = Campaign.objects.all()
+    return render(request, 'actions.html', {'campaigns': campaigns})
 
 
 @login_required
@@ -136,3 +145,4 @@ def change_admin_status(request):
         return render(request, 'profile.html', {'profile': profile})
     
     return render(request, 'profile.html', {'profile': profile})
+

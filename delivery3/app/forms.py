@@ -13,5 +13,9 @@ class UserProfileForm(forms.ModelForm):
 class CampaignForm(forms.ModelForm):
     class Meta:
         model = Campaign
-        fields = ['name', 'start_date', 'start_time', 'end_date', 'end_time', 'description', 'points']
+        fields = ['name', 'start_time', 'end_time', 'description', 'points']
+        widgets = {
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
         

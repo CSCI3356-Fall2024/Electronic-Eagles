@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Campaigns</h2>
+    <div class="row">
+        {% if campaigns %}
+            {% for campaign in campaigns %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ campaign.name }}</h5>
+                            <p class="card-text">{{ campaign.description }}</p>
+                            <p class="card-text"><strong>Start Date & Time:</strong> {{ campaign.start_time }}</p>
+                            <p class="card-text"><strong>End Date & Time:</strong> {{ campaign.end_time }}</p>
+                            <p class="card-text"><strong>Points:</strong> {{ campaign.points }}</p>
+                            <a class="btn btn-primary">Redeem</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No active campaigns found.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

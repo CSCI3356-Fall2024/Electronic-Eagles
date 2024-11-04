@@ -18,9 +18,7 @@ def landing_page(request):
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         if not profile.is_complete:
             return redirect('profile_setup')
-        else:
-            return redirect('profile')
-    return render(request, 'base.html')
+    return render(request, 'landing_page.html')
 
 
 @login_required
@@ -59,6 +57,7 @@ def logout_view(request):
 
 #LEFT OUT LOGIN REQUIREMENT FOR DEBUGGING
 def campaign_create_view(request):
+    campaign, created = Campaign.objects.get_or_create(name=request.name)
     if request.method == 'POST':
         form = CampaignForm(request.POST)
         if form.is_valid():

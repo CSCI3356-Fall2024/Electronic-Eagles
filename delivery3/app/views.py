@@ -55,7 +55,7 @@ def logout_view(request):
     logout(request)
     return redirect('landing_page')
 
-#LEFT OUT LOGIN REQUIREMENT FOR DEBUGGING
+@login_required
 def campaign_create_view(request):
     if request.method == 'POST':
         form = CampaignForm(request.POST)
@@ -66,6 +66,7 @@ def campaign_create_view(request):
                 return redirect('active_campaigns')  
             except ValidationError as e:
                 form.add_error(None, e)
+                print("Save error:", e)
         else:
             messages.error(request, "There was an error with your submission.")
     else:
@@ -73,13 +74,13 @@ def campaign_create_view(request):
 
     return render(request, 'campaign_create.html', {'form': form})
 
-# List all active campaigns
+@login_required
 def active_campaigns_view(request):
     today = timezone.now().date()
     campaigns = Campaign.objects.filter(start_date__lte=today, end_date__gte=today)
     return render(request, 'active_campaigns.html', {'campaigns': campaigns})
 
-# Edit a specific campaign
+@login_required
 def edit_campaign_view(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
     if request.method == 'POST':
@@ -129,4 +130,8 @@ def change_admin_status(request):
         return render(request, 'profile.html', {'profile': profile})
     
     return render(request, 'profile.html', {'profile': profile})
+
+@login_required
+def actions_view(request):
+    
 

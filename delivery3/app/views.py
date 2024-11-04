@@ -58,27 +58,26 @@ def logout_view(request):
 #LEFT OUT LOGIN REQUIREMENT FOR DEBUGGING
 def campaign_create_view(request):
     if request.method == 'POST':
-        form = CampaignForm(request.POST)
+        form = forms.CampaignForm(request.POST)
         if form.is_valid():
-            try:
-                form.save()
-                messages.success(request, "Campaign created successfully!")
-                return redirect('active_campaigns')  
-            except ValidationError as e:
-                form.add_error(None, e)
+            campaign = form.save(commit=False)
+            print("Campaign saevd:", campaign)
+            messages.success(request, "Campaign created successfully!")
+            campaign.save()
+            return redirect('active_campaigns')
         else:
-            messages.error(request, "There was an error with your submission.")
+            print("Form errors:", form.errors)  
     else:
-        form = CampaignForm()
+        form = forms.CampaignForm()
 
     return render(request, 'campaign_create.html', {'form': form})
 
 # List all active campaigns
 def active_campaigns_view(request):
     today = timezone.now().date()
-    campaigns = Campaign.objects.filter(start_date__lte=today, end_date__gte=today)
+    campaigns = Campaign.objects.filter(start_time__lte=today, end_time__gte=today)
     return render(request, 'active_campaigns.html', {'campaigns': campaigns})
-
+'''
 # Edit a specific campaign
 def edit_campaign_view(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
@@ -91,6 +90,8 @@ def edit_campaign_view(request, pk):
     else:
         form = CampaignForm(instance=campaign)
     return render(request, 'edit_campaign.html', {'form': form, 'campaign': campaign})
+    '''
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)  # Ensure only superusers can access this

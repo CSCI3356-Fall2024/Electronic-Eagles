@@ -17,7 +17,7 @@
                     <h2 class="text-center mb-4">Create New Campaign</h2>
                     <p class="text-center form-required-notice">All fields are required</p>
                     
-                    <form method="post">
+                    <form method="POST">
                         {% csrf_token %}
                         <table class="table table-borderless">
                             <tbody>
@@ -26,20 +26,12 @@
                                     <td><input type="text" id="campaign-name" name="name" class="form-control" required></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="start-date">Start Date <span class="required-asterisk">*</span></label></th>
-                                    <td><input type="date" id="start-date" name="start_date" class="form-control" required></td>
+                                    <th><label for="start-time">Start Date & Time <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="datetime-local" id="start-time" name="start_time" class="form-control" required></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="start-time">Start Time <span class="required-asterisk">*</span></label></th>
-                                    <td><input type="time" id="start-time" name="start_time" class="form-control" required></td>
-                                </tr>
-                                <tr>
-                                    <th><label for="end-date">End Date <span class="required-asterisk">*</span></label></th>
-                                    <td><input type="date" id="end-date" name="end_date" class="form-control" required></td>
-                                </tr>
-                                <tr>
-                                    <th><label for="end-time">End Time <span class="required-asterisk">*</span></label></th>
-                                    <td><input type="time" id="end-time" name="end_time" class="form-control" required></td>
+                                    <th><label for="end-time">End Date & Time <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="datetime-local" id="end-time" name="end_time" class="form-control" required></td>
                                 </tr>
                                 <tr>
                                     <th><label for="description">Campaign Description <span class="required-asterisk">*</span></label></th>

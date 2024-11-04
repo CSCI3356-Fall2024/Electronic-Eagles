@@ -22,9 +22,7 @@ class UserProfile(models.Model):
     
 class Campaign(models.Model):
     name = models.CharField(max_length=100)
-    start_date = models.DateField(auto_now=False, auto_now_add=False) 
     start_time = models.DateTimeField(auto_now=False, auto_now_add=False) #ADDITION TO OUR CONTRACT
-    end_date = models.DateField(auto_now=False, auto_now_add=False)
     end_time = models.DateTimeField(auto_now=False, auto_now_add=False)
     description = models.TextField()
     points = models.IntegerField() #Do we set a range on the points?
@@ -34,7 +32,7 @@ class Campaign(models.Model):
 
     def clean(self):
         super().clean()
-        if self.start_date > self.end_date:
+        if self.start_time > self.end_time:
             raise ValidationError("Start date cannot be after end date.")
-        if (self.start_date == self.end_date) and (self.start_time >= self.end_time):
-            raise ValidationError("For the same start and end date, start time must be before end time.")
+        #if (self.start_date == self.end_date) and (self.start_time >= self.end_time):
+            #raise ValidationError("For the same start and end date, start time must be before end time.")

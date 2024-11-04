@@ -39,7 +39,7 @@ def profile_setup(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = forms.UserProfileForm(request.POST, instance=request.user.userprofile)
+        form = forms.UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user = request.user
@@ -55,13 +55,12 @@ def logout_view(request):
     logout(request)
     return redirect('landing_page')
 
-#LEFT OUT LOGIN REQUIREMENT FOR DEBUGGING
+@login_required
 def campaign_create_view(request):
     if request.method == 'POST':
         form = forms.CampaignForm(request.POST)
         if form.is_valid():
             campaign = form.save(commit=False)
-            print("Campaign saevd:", campaign)
             messages.success(request, "Campaign created successfully!")
             campaign.save()
             return redirect('active_campaigns')
@@ -72,12 +71,14 @@ def campaign_create_view(request):
 
     return render(request, 'campaign_create.html', {'form': form})
 
-# List all active campaigns
+@login_required
 def active_campaigns_view(request):
     today = timezone.now().date()
     campaigns = Campaign.objects.filter(start_time__lte=today, end_time__gte=today)
     return render(request, 'active_campaigns.html', {'campaigns': campaigns})
+
 '''
+@login_required
 # Edit a specific campaign
 def edit_campaign_view(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
@@ -90,7 +91,7 @@ def edit_campaign_view(request, pk):
     else:
         form = CampaignForm(instance=campaign)
     return render(request, 'edit_campaign.html', {'form': form, 'campaign': campaign})
-    '''
+'''
 
 
 @login_required
@@ -130,4 +131,3 @@ def change_admin_status(request):
         return render(request, 'profile.html', {'profile': profile})
     
     return render(request, 'profile.html', {'profile': profile})
-

@@ -29,6 +29,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('campaign/create/', views.campaign_create_view, name='campaign_create'),
     path('campaign', views.active_campaigns_view, name='active_campaigns'),
+    path('actions', views.actions_view, name='actions'),
     #path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
     path('change_admin_status/', views.change_admin_status, name='change_admin_status'),
 

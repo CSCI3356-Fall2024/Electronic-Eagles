@@ -77,6 +77,11 @@ def active_campaigns_view(request):
     campaigns = Campaign.objects.filter(start_time__lte=today, end_time__gte=today)
     return render(request, 'active_campaigns.html', {'campaigns': campaigns})
 
+@login_required
+def actions_view(request):
+    campaigns = Campaign.objects.all()
+    return render(request, 'actions.html', {'campaigns': campaigns})
+
 '''
 @login_required
 # Edit a specific campaign

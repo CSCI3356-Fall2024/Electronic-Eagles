@@ -57,7 +57,6 @@ def logout_view(request):
 
 #LEFT OUT LOGIN REQUIREMENT FOR DEBUGGING
 def campaign_create_view(request):
-    campaign, created = Campaign.objects.get_or_create(name=request.name)
     if request.method == 'POST':
         form = CampaignForm(request.POST)
         if form.is_valid():

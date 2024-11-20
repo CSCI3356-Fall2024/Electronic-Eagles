@@ -153,3 +153,7 @@ def view_campaign_details(request, pk):
         'campaign': campaign
     })
 
+@login_required
+def rewards_view(request):
+    user_profile = request.user.userprofile
+    return render(request, 'rewards.html', {'points': user_profile.points})

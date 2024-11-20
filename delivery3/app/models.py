@@ -19,6 +19,7 @@ class UserProfile(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     admin = models.BooleanField(default=False)
     is_complete = models.BooleanField(default = False)
+    points = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username

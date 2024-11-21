@@ -4,7 +4,6 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import UserProfile
 from .forms import UserProfileForm, CampaignForm
@@ -13,6 +12,50 @@ from django.db import transaction
 from app import forms
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+
+@require_http_methods(["POST"])
+def validate_campaign(request, campaign_id):
+    try:
+        # Get the campaign
+        campaign = Campaign.objects.get(unique_id=campaign_id)
+        
+        # Check if campaign is active
+        now = timezone.now()
+        if campaign.start_time > now:
+            return JsonResponse({
+                'success': False,
+                'message': 'This campaign has not started yet.'
+            })
+        
+        if campaign.end_time < now:
+            return JsonResponse({
+                'success': False,
+                'message': 'This campaign has ended.'
+            })
+        
+        # Get user profile and add points
+        user_profile = request.user.userprofile
+        user_profile.points += campaign.points
+        user_profile.save()
+        
+        return JsonResponse({
+            'success': True,
+            'points': campaign.points,
+            'total_points': user_profile.points
+        })
+        
+    except Campaign.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'message': 'Invalid QR code.'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': 'An error occurred while processing the QR code.'
+        })
 
 
 def landing_page(request):

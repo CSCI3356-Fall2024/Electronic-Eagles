@@ -1,31 +1,138 @@
 {% extends "base.html" %}
-
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center">Campaigns</h2>
+    
+    <!-- QR Scanner Container -->
+    <div class="text-center mb-4">
+        <button id="scanButton" class="btn btn-primary" style="color: white">
+            Scan QR Code
+        </button>
+    </div>
+    <div id="qr-reader" class="mx-auto mb-4" style="width: 500px; display: none;"></div>
+    <div id="qr-reader-results" class="text-center mb-4"></div>
+
+    <!-- Campaigns List -->
     <div class="row">
         {% if campaigns %}
             {% for campaign in campaigns %}
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ campaign.name }}</h5>
-                            <p class="card-text">{{ campaign.description }}</p>
-                            <p class="card-text"><strong>Start Date & Time:</strong> {{ campaign.start_time }}</p>
-                            <p class="card-text"><strong>End Date & Time:</strong> {{ campaign.end_time }}</p>
-                            <p class="card-text"><strong>Points:</strong> {{ campaign.points }}</p>
-                            <form action="{% url 'rewards' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
-                                <button type="submit" class="btn btn-primary" style="color: white">Redeem</button>
-                            </form>
-                        </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ campaign.name }}</h5>
+                        <p class="card-text">{{ campaign.description }}</p>
+                        <p class="card-text"><strong>Start Date & Time:</strong> {{ campaign.start_time }}</p>
+                        <p class="card-text"><strong>End Date & Time:</strong> {{ campaign.end_time }}</p>
+                        <p class="card-text"><strong>Points:</strong> {{ campaign.points }}</p>
+                        <form action="{% url 'rewards' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+                            <button type="submit" class="btn btn-primary" style="color: white">Redeem</button>
+                        </form>
                     </div>
                 </div>
+            </div>
             {% endfor %}
         {% else %}
             <p class="text-center">No active campaigns found.</p>
         {% endif %}
     </div>
 </div>
+
+<!-- Include the html5-qrcode library -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<!-- QR Scanner JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let html5QrcodeScanner = null;
+        const qrReaderDiv = document.getElementById('qr-reader');
+        const scanButton = document.getElementById('scanButton');
+        const resultsDiv = document.getElementById('qr-reader-results');
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Check if the QR code starts with "campaign:"
+            if (decodedText.startsWith('campaign:')) {
+                const campaignId = decodedText.split(':')[1];
+                resultsDiv.innerHTML = '<div class="alert alert-info">Processing QR code...</div>';
+                
+                // Send to backend for validation
+                fetch(`/validate-campaign/${campaignId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resultsDiv.innerHTML = `<div class="alert alert-success">
+                            Successfully redeemed ${data.points} points! Total points: ${data.total_points}
+                        </div>`;
+                        // Reload the page after 2 seconds to update the UI
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        resultsDiv.innerHTML = `<div class="alert alert-danger">
+                            ${data.message}
+                        </div>`;
+                    }
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<div class="alert alert-danger">
+                        Error processing QR code
+                    </div>`;
+                });
+                
+                // Stop scanning
+                html5QrcodeScanner.clear();
+                html5QrcodeScanner = null;
+                qrReaderDiv.style.display = 'none';
+            }
+        }
+
+        function onScanFailure(error) {
+            // Handle scan failure, just ignore
+        }
+
+        // CSRF token helper function
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Initialize QR Scanner on button click
+        scanButton.addEventListener('click', function() {
+            if (!html5QrcodeScanner) {
+                qrReaderDiv.style.display = 'block';
+                resultsDiv.innerHTML = ''; // Clear any previous results
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "qr-reader",
+                    { fps: 10, qrbox: {width: 250, height: 250} },
+                    /* verbose= */ false
+                );
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+                scanButton.textContent = 'Close Scanner';
+            } else {
+                html5QrcodeScanner.clear();
+                html5QrcodeScanner = null;
+                qrReaderDiv.style.display = 'none';
+                resultsDiv.innerHTML = '';
+                scanButton.textContent = 'Scan QR Code';
+            }
+        });
+    });
+</script>
 {% endblock %}

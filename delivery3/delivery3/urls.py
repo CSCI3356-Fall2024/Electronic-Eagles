@@ -34,7 +34,8 @@ urlpatterns = [
     path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
     path('change_admin_status/', views.change_admin_status, name='change_admin_status'),
     path('campaign/<int:pk>/view/', views.view_campaign_details, name='view_campaign_details'),
-    path('rewards/', views.rewards_view, name='rewards')
+    path('rewards/', views.rewards_view, name='rewards'),
+    path('validate-campaign/<uuid:campaign_id>/', views.validate_campaign, name='validate_campaign')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

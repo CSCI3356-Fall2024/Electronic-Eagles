@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
-from allauth.socialaccount.models import SocialAccount
 from django.contrib import messages
 from django.utils import timezone
 from django.core.exceptions import ValidationError
@@ -10,6 +9,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from .forms import UserProfileForm, CampaignForm
 from .models import UserProfile, Campaign
+from django.db import transaction
 from app import forms
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, get_object_or_404
@@ -36,20 +36,32 @@ def first(request):
     else:
         return redirect('profile_setup')
 
+
 @login_required
 def profile_setup(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        form = forms.UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user = request.user
-            profile.is_complete = True
-            profile.save()
-            return redirect('profile')
+            try:
+                with transaction.atomic():
+                    # Save the profile
+                    profile = form.save(commit=False)
+                    profile.user = request.user
+                    profile.is_complete = True
+                    profile.save()
+                    
+                    # Update the User model username to match
+                    request.user.username = profile.username
+                    request.user.save()
+                    
+                return redirect('profile')
+            except ValidationError as e:
+                messages.error(request, str(e))
     else:
-        form = forms.UserProfileForm(instance=request.user.userprofile)
+        form = UserProfileForm(instance=profile)
+    
     return render(request, 'profile_setup.html', {'form': form})
 
 

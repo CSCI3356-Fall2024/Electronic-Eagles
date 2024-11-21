@@ -271,6 +271,7 @@ $(document).on('click', '.remove', function() {
               <form action="{% url 'rewards' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="points_to_subtract" value="2500">
+                <input type="hidden" name="item_name" value="$15 Eagles Bucks">
                 <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
             </form>
               <div class="details">
@@ -309,6 +310,7 @@ $(document).on('click', '.remove', function() {
                 <form action="{% url 'rewards' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="points_to_subtract" value="2500">
+                    <input type="hidden" name="item_name" value="$15 School Store Gift Card">
                     <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
                 </form>
               <div class="details">
@@ -347,6 +349,7 @@ $(document).on('click', '.remove', function() {
                 <form action="{% url 'rewards' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="points_to_subtract" value="25000">
+                    <input type="hidden" name="item_name" value="Speciality Game Ticket - BU vs BC Hockey">
                     <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
                 </form>
               <div class="details">

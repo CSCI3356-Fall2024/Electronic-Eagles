@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.core.mail import send_mail
+from allauth.account.models import EmailAddress
 
 @require_http_methods(["POST"])
 def validate_campaign(request, campaign_id):
@@ -226,12 +228,29 @@ def rewards_view(request):
                     messages.error(request, "You have already redeemed this campaign.")
                 return redirect('actions')
         
-        elif 'points_to_subtract' in request.POST:
+        elif 'points_to_subtract' and 'item_name' in request.POST:
             points_to_subtract = int(request.POST.get('points_to_subtract', 0))
+            item_name = request.POST.get('item_name')
             if user_profile.points >= points_to_subtract:
                 user_profile.points -= points_to_subtract
                 user_profile.save()
                 messages.success(request, "Points successfully subtracted!")
+
+                try:
+                   user = request.user
+                   email_address = EmailAddress.objects.filter(user=user, primary=True).first()
+                   send_mail(
+                       'Redeemed event',
+                       f'You have successfully redeemed {item_name} for {points_to_subtract} points! Thank you for keeping the environment clean. Your efforts are not going unnoticed. The dev team here at Eco Edu hopes you enjoy your reward.',
+                       'blest@bc.edu',
+                       [email_address.email],
+                       fail_silently=False,
+                   )
+                   messages.success(request, "Email sent successfully!")
+
+                except Exception as e:
+                   messages.error(request, f"Failed to send email: {str(e)}")
+
                 return redirect('rewards')
             else:
                 messages.error(request, "Not enough points")

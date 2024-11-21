@@ -9,10 +9,11 @@ from .models import UserProfile
 
 @receiver(pre_save, sender=User)
 def prevent_duplicate_email(sender, instance, **kwargs):
-    """Prevent users from having duplicate emails"""
-    if instance.email:
-        existing_user = User.objects.filter(email=instance.email).exclude(id=instance.id).first()
-        if existing_user:
+    """
+    Prevent duplicate emails only for new user registrations
+    """
+    if instance._state.adding:  # Only check on new user creation
+        if instance.email and User.objects.filter(email=instance.email).exists():
             raise ValidationError('An account with this email already exists.')
 
 @receiver(user_signed_up)
@@ -23,18 +24,12 @@ def handle_user_signup(sender, request, user, **kwargs):
         social_account = SocialAccount.objects.get(user=user, provider='google')
         extra_data = social_account.extra_data
         
-        # Check for existing email
-        email = user.email
-        if User.objects.filter(email=email).exclude(id=user.id).exists():
-            user.delete()
-            raise ValidationError('An account with this email already exists.')
-        
         # Generate unique username if needed
-        base_username = email.split('@')[0]
+        base_username = user.email.split('@')[0]
         username = base_username
         counter = 1
         
-        while User.objects.filter(username=username).exists():
+        while User.objects.filter(username=username).exclude(id=user.id).exists():
             username = f"{base_username}{counter}"
             counter += 1
         
@@ -53,7 +48,8 @@ def handle_user_signup(sender, request, user, **kwargs):
         )
         
     except Exception as e:
-        # Clean up if profile creation fails
+        # Log the error and optionally delete the user if profile creation fails
+        print(f"Error creating user profile: {str(e)}")
         if UserProfile.objects.filter(user=user).exists():
             UserProfile.objects.filter(user=user).delete()
         user.delete()

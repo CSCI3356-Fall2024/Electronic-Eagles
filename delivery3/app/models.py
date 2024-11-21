@@ -32,6 +32,7 @@ class Campaign(models.Model):
     # New fields for QR code
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    redeemed_users = models.ManyToManyField(User, blank=True, related_name='redeemed_campaigns')
 
     def __str__(self):
         return self.name

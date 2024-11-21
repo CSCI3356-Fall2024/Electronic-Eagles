@@ -162,7 +162,8 @@ def edit_campaign_view(request, pk):
 @login_required
 def actions_view(request):
     campaigns = Campaign.objects.all()
-    return render(request, 'actions.html', {'campaigns': campaigns})
+    now = timezone.now()
+    return render(request, 'actions.html', {'campaigns': campaigns, 'now': now})
 
 
 @login_required
@@ -216,12 +217,14 @@ def rewards_view(request):
             campaign_id = request.POST.get('campaign_id')
             if campaign_id:
                 campaign = get_object_or_404(Campaign, pk=campaign_id)
-                user_profile.points += campaign.points
-                user_profile.save()
-                messages.success(request, "Points redeemed successfully!")
-                return redirect('rewards')
-            else:
-                messages.error(request, "Event not redeemable")
+                if request.user not in campaign.redeemed_users.all():
+                    user_profile.points += campaign.points
+                    user_profile.save()
+                    campaign.redeemed_users.add(request.user)
+                    messages.success(request, "Points redeemed successfully!")
+                else:
+                    messages.error(request, "You have already redeemed this campaign.")
+                return redirect('actions')
         
         elif 'points_to_subtract' in request.POST:
             points_to_subtract = int(request.POST.get('points_to_subtract', 0))

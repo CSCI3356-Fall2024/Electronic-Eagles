@@ -1,10 +1,375 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5 text-center">
-    <h2>Your Rewards</h2>
-    <p>You currently have:</p>
-    <h1 class="display-4">{{ points }} Points</h1>
-    <p>Keep completing campaigns to earn more rewards!</p>
-</div>
+{% load static %}
+<head> 
+<style>
+    body {
+        font-family: sans-serif;
+        padding: 0px;
+    }
+
+    .flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .wrapper {
+        width: 300px;
+        height: 500px;
+        background: white;
+        margin: auto;
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px 10px 10px 10px;
+        box-shadow: 0;
+        transform: scale(0.95);
+        transition: box-shadow 0.5s, transform 0.5s;
+    }
+
+    .wrapper:hover {
+        transform: scale(1);
+        box-shadow: 5px 20px 30px rgba(0,0,0,0.2);
+    }
+
+    .wrapper .container {
+        width: 100%;
+        height: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .wrapper .container .top1 {
+        width: 100%;
+        height: 80%;
+        background: url("{% static 'money.jpg' %}") no-repeat center center;
+        background-size: 100%;
+    }
+
+    .wrapper .container .top2 {
+        width: 100%;
+        height: 80%;
+        background: url("{% static 'giftCard.jpg' %}") no-repeat center center;
+        background-size: 100%;
+    }
+
+    .wrapper .container .top3 {
+        width: 100%;
+        height: 80%;
+        background: url("{% static 'luckyTicket.jpg' %}") no-repeat center center;
+        background-size: 100%;
+    }
+
+    .wrapper .container .bottom {
+        font-size: 15px;
+        width: 212%;
+        height: 17%;
+        transition: transform 0.5s;
+    }
+
+    .wrapper .container .bottom.clicked {
+        transform: translateX(-52%);
+    }
+
+    .wrapper .container .bottom h1, .wrapper .container .bottom p {
+        padding: 0;
+        font-size: 75%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .wrapper .container .bottom .left {
+        height: 100%;
+        width: 50%;
+        background: #f4f4f4;
+        position: relative;
+        float: left;
+    }
+
+    .wrapper .container .left .details, .wrapper .container .bottom .left .buy {
+        padding: 20px;
+        float: left;
+        width: calc(70% - 40px);
+    }
+
+    .wrapper .container .bottom .left .buy {
+        float: right;
+        width: calc(30% - 2px);
+        height: 100%;
+        background: #f1f1f1;
+        transition: background 0.5s;
+        border-left: solid thin rgba(0,0,0,0.1);
+    }
+
+    .wrapper .container .bottom .left .buy i {
+        font-size: 70%;
+        padding: 0;
+        color: #254053;
+        transition: transform 0.5s;
+    }
+
+    .wrapper .container .bottom .left .buy:hover {
+        background: #A6CDDE;
+    }
+
+    .wrapper .container .bottom .left .buy:hover i {
+        transform: translateY(5px);
+        color: #00394b;
+    }
+
+    .wrapper .container .bottom .right {
+        width: 50%;
+        background: #A6CDDE;
+        color: white;
+        float: right;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .wrapper .container .bottom .right:hover .remove, .wrapper .container .bottom .right:hover .done {
+        transform: translateY(0);
+    }
+
+    .wrapper .container .bottom .right .details {
+        padding: 15px;
+        float: right;
+        width: calc(70% - 40px);
+    }
+
+    .wrapper .container .bottom .right button, .wrapper .container .bottom .right .remove {
+        width: calc(30% - 3px);
+        float: left;
+        cursor: pointer;
+        text-align: center;
+        transition: transform 0.5s;
+        border-right: solid thin rgba(255, 255, 255, 0.3);
+        height: 70%;
+    }
+
+    .wrapper .container .bottom .right .done i, .wrapper .container .bottom .right .remove i {
+        font-size: 100%;
+        padding: 0;
+        color: white;
+        text-align: center;
+        transition: transform 0.5s;
+    }
+
+    .wrapper .container .bottom .right button {
+        background-color: #28a745;
+        border: none;
+        outline: none;
+    }
+    
+    .wrapper .container .bottom .right .remove {
+        background: #BC3B59;
+        transition: transform 0.5s, background 0.5s;
+    }
+
+    .wrapper .container .bottom .right .remove:hover {
+        background: #9B2847;
+    }
+
+    .wrapper .container .bottom .right .remove:hover i {
+        transform: translateY(5px);
+    }
+
+    .wrapper .inside {
+        z-index: 9;
+        background: #28a745;
+        width: 140px;
+        height: 140px;
+        position: absolute;
+        top: -70px;
+        right: -70px;
+        border-radius: 0px 0px 200px 200px;
+        transition: all 0.5s, border-radius 2s, top 1s;
+        overflow: hidden;
+    }
+
+    .wrapper .inside:hover {
+        width: 100%;
+        right: 0;
+        top: 0;
+        border-radius: 0;
+        height: 80%;
+    }
+
+    .wrapper .inside .icon {
+        position: absolute;
+        right: 85px;
+        top: 85px;
+        color: white;
+        opacity: 1;
+    }
+
+    .wrapper .inside:hover .icon {
+        opacity: 0;
+        right: 15px;
+        top: 15px;
+    }
+
+    .wrapper .inside .contents {
+        padding: 5%;
+        opacity: 0;
+        transform: scale(0.5);
+        transform: translateY(-200%);
+        transition: opacity 0.2s, transform 0.8s;
+    }
+
+    .wrapper .inside:hover .contents {
+        opacity: 1;
+        transform: scale(1);
+        transform: translateY(0);
+    }
+
+    .wrapper .inside .contents table, .wrapper .inside .contents h1, .wrapper .inside .contents p, .wrapper .inside .contents table {
+        text-align: left;
+        width: 100%;
+        color: white;
+    }
+
+    .wrapper .inside .contents p {
+        font-size: 13px;
+    }
+
+
+    
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).on('click', '.buy', function() {
+    console.log("Buy clicked");
+    $('.bottom').addClass('clicked');
+});
+
+$(document).on('click', '.remove', function() {
+    $('.bottom').removeClass('clicked');
+});
+
+</script>
+</head>
+<body>
+    <div class="container mt-5 text-center">
+        <h2>Your Rewards</h2>
+        <p>You currently have:</p>
+        <h1 class="display-4">{{ points }} Points</h1>
+        <p>Keep completing campaigns to earn more rewards!</p>
+    </div>
+    <div class="flex">
+    <div class="wrapper">
+        <div class="container">
+          <div class="top1"></div>
+          <div class="bottom">
+            <div class="left">
+              <div class="details">
+                <h1>Eagle Bucks $15</h1>
+                <p>2,500 Points</p>
+              </div>
+              <div class="buy"><i class="material-icons">Redeem</i></div>
+            </div>
+            <div class="right">
+              <form action="{% url 'rewards' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="points_to_subtract" value="2500">
+                <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
+            </form>
+              <div class="details">
+                <p>Are yu sure you want to reddem 2,500 points for $15 Eagle Bucks?</p>
+              </div>
+              <div class="remove"><i class="material-icons">Cancel</i></div>
+            </div>
+          </div>
+        </div>
+        <div class="inside">
+          <div class="icon"><i class="material-icons">Details</i></div>
+          <div class="contents">
+            <table>
+              <tr>
+                <th>Product Description</th>
+              </tr>
+              <tr>
+                <td>$15 in Eagle Bucks</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="wrapper">
+        <div class="container">
+          <div class="top2"></div>
+          <div class="bottom">
+            <div class="left">
+              <div class="details">
+                <h1>School Store Gift Card $15</h1>
+                <p>2,500 Points</p>
+              </div>
+              <div class="buy"><i class="material-icons">Redeem</i></div>
+            </div>
+            <div class="right">
+                <form action="{% url 'rewards' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="points_to_subtract" value="2500">
+                    <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
+                </form>
+              <div class="details">
+                <p>Are you sure you want to redeem 2,500 points for a $15 School Store Gift Card?</p>
+              </div>
+              <div class="remove"><i class="material-icons">Cancel</i></div>
+            </div>
+          </div>
+        </div>
+        <div class="inside">
+          <div class="icon"><i class="material-icons">Details</i></div>
+          <div class="contents">
+            <table>
+              <tr>
+                <th>Product Description</th>
+              </tr>
+              <tr>
+                <td>$15 School Store Gift Card</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="wrapper">
+        <div class="container">
+          <div class="top3"></div>
+          <div class="bottom">
+            <div class="left">
+              <div class="details">
+                <h1>Speciality Game Ticket - BU vs BC Hockey</h1>
+                <p>25,000 Points</p>
+              </div>
+              <div class="buy"><i class="material-icons">Redeem</i></div>
+            </div>
+            <div class="right">
+                <form action="{% url 'rewards' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="points_to_subtract" value="25000">
+                    <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
+                </form>
+              <div class="details">
+                <p>Are you sure you want to redeem 25,000 points for a BC vs BU hockey ticket?</p>
+              </div>
+              <div class="remove"><i class="material-icons">clear</i></div>
+            </div>
+          </div>
+        </div>
+        <div class="inside">
+          <div class="icon"><i class="material-icons">Details</i></div>
+          <div class="contents">
+            <table>
+              <tr>
+                <th>Product Description</th>
+              </tr>
+              <tr>
+                <td>Ticket to BC vs BU Hockey Game</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    </body>
 {% endblock %}

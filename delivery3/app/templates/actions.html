@@ -14,7 +14,11 @@
                             <p class="card-text"><strong>Start Date & Time:</strong> {{ campaign.start_time }}</p>
                             <p class="card-text"><strong>End Date & Time:</strong> {{ campaign.end_time }}</p>
                             <p class="card-text"><strong>Points:</strong> {{ campaign.points }}</p>
-                            <a class="btn btn-primary" style="color: white">Redeem</a>
+                            <form action="{% url 'rewards' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+                                <button type="submit" class="btn btn-primary" style="color: white">Redeem</button>
+                            </form>
                         </div>
                     </div>
                 </div>

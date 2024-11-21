@@ -168,4 +168,27 @@ def view_campaign_details(request, pk):
 @login_required
 def rewards_view(request):
     user_profile = request.user.userprofile
+    if request.method == 'POST':
+        if 'campaign_id' in request.POST:
+            campaign_id = request.POST.get('campaign_id')
+            if campaign_id:
+                campaign = get_object_or_404(Campaign, pk=campaign_id)
+                user_profile.points += campaign.points
+                user_profile.save()
+                messages.success(request, "Points redeemed successfully!")
+                return redirect('rewards')
+            else:
+                messages.error(request, "Event not redeemable")
+        
+        elif 'points_to_subtract' in request.POST:
+            points_to_subtract = int(request.POST.get('points_to_subtract', 0))
+            if user_profile.points >= points_to_subtract:
+                user_profile.points -= points_to_subtract
+                user_profile.save()
+                messages.success(request, "Points successfully subtracted!")
+                return redirect('rewards')
+            else:
+                messages.error(request, "Not enough points")
+        
+
     return render(request, 'rewards.html', {'points': user_profile.points})

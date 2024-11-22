@@ -228,6 +228,7 @@ def view_campaign_details(request, pk):
 @login_required
 def rewards_view(request):
     user_profile = request.user.userprofile
+    rewardResponse = ""
     if request.method == 'POST':
         if 'campaign_id' in request.POST:
             campaign_id = request.POST.get('campaign_id')
@@ -245,6 +246,7 @@ def rewards_view(request):
         elif 'points_to_subtract' in request.POST and 'item_name' in request.POST:
             points_to_subtract = int(request.POST.get('points_to_subtract', 0))
             item_name = request.POST.get('item_name')
+<<<<<<< HEAD
             
             if user_profile.points >= points_to_subtract:
                 with transaction.atomic():
@@ -272,3 +274,33 @@ def rewards_view(request):
                 messages.error(request, "Not enough points available.")
                 
             return render(request, 'rewards.html', {'points': user_profile.points})
+=======
+            rewardResponse = f'Not enough points for {item_name} need {points_to_subtract - user_profile.points} more points!'
+            if user_profile.points >= points_to_subtract:
+                user_profile.points -= points_to_subtract
+                user_profile.save()
+                rewardResponse = f'You have succesfully redeemed {item_name} for {points_to_subtract} points! Check email for more details.'
+                messages.success(request, "Points successfully subtracted!")
+
+                try:
+                   user = request.user
+                   email_address = EmailAddress.objects.filter(user=user, primary=True).first()
+                   send_mail(
+                       'Redeemed event',
+                       f'You have successfully redeemed {item_name} for {points_to_subtract} points! Thank you for keeping the environment clean. Your efforts are not going unnoticed. The dev team here at Eco Edu hopes you enjoy your reward.',
+                       'blest@bc.edu',
+                       [email_address.email],
+                       fail_silently=False,
+                   )
+                   messages.success(request, "Email sent successfully!")
+
+                except Exception as e:
+                   messages.error(request, f"Failed to send email: {str(e)}")
+
+                return redirect('rewards')
+            else:
+                messages.error(request, "Not enough points")
+        
+
+    return render(request, 'rewards.html', {'points': user_profile.points, 'rewardResponse': rewardResponse})
+>>>>>>> origin/main

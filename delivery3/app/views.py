@@ -133,6 +133,8 @@ def campaign_create_view(request):
 @login_required
 def active_campaigns_view(request):
     now = timezone.now()
+    permanent_campaigns = Campaign.objects.filter(permanent=True)
+
     active_campaigns = Campaign.objects.filter(
         start_time__lte=now,
         end_time__gt=now
@@ -142,7 +144,8 @@ def active_campaigns_view(request):
     )
     return render(request, 'active_campaigns.html', {
         'active_campaigns': active_campaigns,
-        'inactive_campaigns': inactive_campaigns
+        'inactive_campaigns': inactive_campaigns,
+        'permanent_campaigns': permanent_campaigns
     })
 
 @login_required

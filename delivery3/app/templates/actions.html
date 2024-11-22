@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <div class="container mt-5">
     <div class="container mt-5">
@@ -43,13 +44,13 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ campaign.name }}</h5>
                         <p class="card-text">{{ campaign.description }}</p>
-                        <div class="text-center mt-3">
-                            {% if campaign.qr_code %}
-                                <img src="{{ campaign.qr_code.url }}" alt="QR Code" style="width: 100px; height: 100px;">
-                                <a href="{{ campaign.qr_code.url }}" download class="btn btn-sm btn-secondary mt-2">Download QR Code</a>
-                            {% else %}
-                                <p>No QR Code Available</p>
-                            {% endif %}
+                        <div class="mt-auto">
+                            <button 
+                                class="btn btn-primary w-100 scan-qr-btn" 
+                                data-campaign-id="{{ ctx.campaign.unique_id }}"
+                                data-campaign-name="{{ ctx.campaign.name }}">
+                                <i class="fas fa-qrcode me-2"></i>Scan QR Code
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -68,8 +69,8 @@
             {% for ctx in campaign_context %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
-                    {% if campaign.cover_photo %}
-                        <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 200px; object-fit: cover;">
+                    {% if ctx.campaign.cover_photo %}
+                        <img src="{{ ctx.ampaign.cover_photo.url }}" class="card-img-top" alt="{{ ctx.campaign.name }}" style="height: 200px; object-fit: cover;">
                     {% else %}
                         <div class="card-img-top bg-secondary text-white text-center" style="height: 200px; display: flex; align-items: center; justify-content: center;">
                             No Cover Photo
@@ -86,11 +87,7 @@
                             <span class="badge bg-primary">{{ ctx.campaign.points }} Points</span>
                         </div>
                         <div class="mt-auto">
-                            {% if ctx.campaign.end_time < now %}
-                                <button class="btn btn-secondary w-100" disabled>Campaign Ended</button>
-                            {% elif ctx.campaign.start_time > now %}
-                                <button class="btn btn-secondary w-100" disabled>Campaign Starts Soon</button>
-                            {% elif not ctx.can_redeem %}
+                            {% if not ctx.can_redeem %}
                                 <button class="btn btn-success w-100" disabled>Redeemed</button>
                             {% else %}
                                 <button 
@@ -113,6 +110,37 @@
             </div>
         {% endif %}
     </div>
+</div>
+
+<!-- Upcoming Campaigns Section -->
+<div class="mt-5">
+    <h2>Upcoming Campaigns</h2>
+    {% if campaign_context %}
+        {% for ctx in campaign_context %}
+            {% if ctx.campaign.start_time > now %}
+                    <div class="d-flex overflow-auto py-3" style="gap: 1rem;">
+                        <div class="card shadow-sm" style="min-width: 300px; flex-shrink: 0;">
+                            {% if ctx.campaign.cover_photo %}
+                                <img src="{{ ctx.campaign.cover_photo.url }}" class="card-img-top" alt="{{ ctx.campaign.name }}" style="height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-secondary text-white text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                                    No Cover Photo
+                                </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ ctx.campaign.name }}</h5>
+                                <p class="card-text">{{ ctx.campaign.description }}</p>
+                                <div class="text-muted small">
+                                    <div><strong>Starts On:</strong> {{ ctx.campaign.start_time|date:"M d, Y h:i A" }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p class="text-center">No upcoming campaigns </p>
+    {% endif %}
 </div>
 
 <!-- Required JS libraries -->

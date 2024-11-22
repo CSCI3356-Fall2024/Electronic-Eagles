@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from datetime import timedelta
 from .models import UserProfile
 from .forms import UserProfileForm, CampaignForm
 from .models import UserProfile, Campaign
@@ -179,12 +180,15 @@ def actions_view(request):
     points = user_profile.points
 
     campaign_context = []
+    upcoming_campaigns = []
     for campaign in campaigns:
         campaign_context.append({
             'campaign': campaign,
             'is_active': campaign.start_time <= now <= campaign.end_time,
             'can_redeem': campaign.can_redeem(request.user)
+
         })
+
     
     return render(request, 'actions.html', {
         'permanent_campaigns': permanent_campaigns,

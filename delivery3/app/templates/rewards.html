@@ -254,6 +254,7 @@ $(document).on('click', '.remove', function() {
         <p>You currently have:</p>
         <h1 class="display-4">{{ points }} Points</h1>
         <p>Keep completing campaigns to earn more rewards!</p>
+        <p>{{ rewardResponse }}</p>
     </div>
     <div class="flex">
     <div class="wrapper">
@@ -271,6 +272,7 @@ $(document).on('click', '.remove', function() {
               <form action="{% url 'rewards' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="points_to_subtract" value="2500">
+                <input type="hidden" name="item_name" value="$15 Eagles Bucks">
                 <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
             </form>
               <div class="details">
@@ -309,6 +311,7 @@ $(document).on('click', '.remove', function() {
                 <form action="{% url 'rewards' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="points_to_subtract" value="2500">
+                    <input type="hidden" name="item_name" value="$15 School Store Gift Card">
                     <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
                 </form>
               <div class="details">
@@ -347,12 +350,13 @@ $(document).on('click', '.remove', function() {
                 <form action="{% url 'rewards' %}" method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="points_to_subtract" value="25000">
+                    <input type="hidden" name="item_name" value="Speciality Game Ticket - BU vs BC Hockey">
                     <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
                 </form>
               <div class="details">
                 <p>Are you sure you want to redeem 25,000 points for a BC vs BU hockey ticket?</p>
               </div>
-              <div class="remove"><i class="material-icons">clear</i></div>
+              <div class="remove"><i class="material-icons">Cancel</i></div>
             </div>
           </div>
         </div>

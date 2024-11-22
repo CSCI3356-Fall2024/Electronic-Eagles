@@ -6,6 +6,7 @@ import qrcode
 from io import BytesIO
 from django.core.files import File
 import uuid
+from django.utils import timezone
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -17,16 +18,16 @@ class UserProfile(models.Model):
     major2 = models.CharField(max_length=100, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     admin = models.BooleanField(default=False)
-    is_complete = models.BooleanField(default = False)
+    is_complete = models.BooleanField(default=False)
     points = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username
-    
+
 class Campaign(models.Model):
     name = models.CharField(max_length=100)
-    start_time = models.DateTimeField(auto_now=False, auto_now_add=False)
-    end_time = models.DateTimeField(auto_now=False, auto_now_add=False)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
     description = models.TextField()
     points = models.IntegerField()
     cover_photo = models.ImageField(upload_to='campaign_pics/', blank=True, null=True)
@@ -54,7 +55,6 @@ class Campaign(models.Model):
             )
             qr.add_data(f'campaign:{self.unique_id}')
             qr.make(fit=True)
-            
             qr_image = qr.make_image(fill_color="black", back_color="white")
             
             # Save QR code image
@@ -62,10 +62,22 @@ class Campaign(models.Model):
             qr_image.save(buffer, format='PNG')
             filename = f'qr_code-{self.unique_id}.png'
             self.qr_code.save(filename, File(buffer), save=False)
-            
+        
         super().save(*args, **kwargs)
-    
+
     @property
     def is_past_campaign(self):
-        from django.utils import timezone
         return self.end_time < timezone.now()
+
+    @property
+    def is_active(self):
+        now = timezone.now()
+        return self.start_time <= now <= self.end_time
+
+    def can_redeem(self, user):
+        """Check if a user can redeem this campaign"""
+        now = timezone.now()
+        return (
+            self.start_time <= now <= self.end_time and
+            user not in self.redeemed_users.all()
+        )

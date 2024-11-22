@@ -214,6 +214,7 @@ def view_campaign_details(request, pk):
 @login_required
 def rewards_view(request):
     user_profile = request.user.userprofile
+    rewardResponse = ""
     if request.method == 'POST':
         if 'campaign_id' in request.POST:
             campaign_id = request.POST.get('campaign_id')
@@ -231,9 +232,11 @@ def rewards_view(request):
         elif 'points_to_subtract' and 'item_name' in request.POST:
             points_to_subtract = int(request.POST.get('points_to_subtract', 0))
             item_name = request.POST.get('item_name')
+            rewardResponse = f'Not enough points for {item_name} need {points_to_subtract - user_profile.points} more points!'
             if user_profile.points >= points_to_subtract:
                 user_profile.points -= points_to_subtract
                 user_profile.save()
+                rewardResponse = f'You have succesfully redeemed {item_name} for {points_to_subtract} points! Check email for more details.'
                 messages.success(request, "Points successfully subtracted!")
 
                 try:
@@ -256,4 +259,4 @@ def rewards_view(request):
                 messages.error(request, "Not enough points")
         
 
-    return render(request, 'rewards.html', {'points': user_profile.points})
+    return render(request, 'rewards.html', {'points': user_profile.points, 'rewardResponse': rewardResponse})

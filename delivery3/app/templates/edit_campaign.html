@@ -17,7 +17,7 @@
                     <h2 class="text-center mb-4">Edit Campaign</h2>
                     <p class="text-center form-required-notice">All fields are required</p>
                     
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table class="table table-borderless">
                             <tbody>
@@ -41,10 +41,21 @@
                                     <th><label for="points">Points Awarded <span class="required-asterisk">*</span></label></th>
                                     <td><input type="number" id="points" name="points" class="form-control" min="0" value="{{ form.points.value }}" required></td>
                                 </tr>
+                                <tr>
+                                    <th>Cover Photo</th>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <!-- Upload Photo Button -->
+                                                <input type="file" id="cover-photo" name="cover_photo" class="form-control" accept="image/*">
+                                            </div>
+                                        </td>
+                                </tr>
                             </tbody>
                         </table>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                            <button type="submit" name="delete_campaign" class="btn btn-danger mt-3">Delete Campaign</button>
+
                         </div>
                     </form>
                 </div>

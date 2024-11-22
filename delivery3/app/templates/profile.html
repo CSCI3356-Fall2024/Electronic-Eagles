@@ -1,69 +1,87 @@
 {% extends "base.html" %}
 
 {% block title %}
- Profile - {{ profile.username }}
+    Profile - {{ profile.username }}
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
- <div class="row justify-content-center">
-     <div class="col-lg-8 col-md-10">
-         <div class="card shadow">
-             <div class="card-body p-4">
-                 <h2 class="text-center mb-4">{{ profile.name }}'s Profile</h2>
-                 
-                 <div class="text-center mb-4">
-                     <form id="profile-pic-form" method="POST" enctype="multipart/form-data">
-                         {% csrf_token %}
-                         {% if profile.profile_picture %}
-                             <div style="width: 150px; height: 150px; display: inline-block; overflow: hidden; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                 <img src="{{ profile.profile_picture.url }}" 
-                                      alt="Profile Picture" 
-                                      style="width: 100%; height: 100%; object-fit: cover;">
-                             </div>
-                         {% else %}
-                             <p>No profile picture uploaded</p>
-                         {% endif %}
-                         <input type="file" name="profile_picture" id="profile-pic-upload" style="display:none;" accept="image/*">
-                         <br>
-                         <button type="button" onclick="document.getElementById('profile-pic-upload').click();" class="btn btn-secondary mt-2">
-                             Change Picture
-                         </button>
-                     </form>
-                 </div>
-                 
-                 <!-- Profile Details -->
-                 <form id="profile-edit-form" method="POST">
-                     {% csrf_token %}
-                     <table class="table table-bordered">
-                         <tbody>
-                             <tr>
-                                 <th>Username</th>
-                                 <td>{{ profile.username }}</td>
-                             </tr>
-                             {% for field in profile_fields %}
-                             <tr class="editable-row">
-                                 <th>{{ field.label }}</th>
-                                 <td>
-                                     <span class="display-value">{{ field.value }}</span>
-                                     <input type="text" name="{{ field.name }}" value="{{ field.value }}" class="form-control edit-input" style="display:none;">
-                                     <button type="button" class="btn btn-sm btn-outline-secondary edit-btn edit-toggle ml-2">
-                                         <i class="fas fa-edit"></i>
-                                     </button>
-                                 </td>
-                             </tr>
-                             {% endfor %}
-                         </tbody>
-                     </table>
-                     <div id="edit-controls" style="display:none;" class="text-center">
-                         <button type="submit" class="btn btn-primary">Save Changes</button>
-                         <button type="button" class="btn btn-secondary cancel-edit ml-2">Cancel</button>
-                     </div>
-                 </form>
-             </div>
-         </div>
-     </div>
- </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">{{ profile.name }}'s Profile</h2>
+                    
+                    {% if user.is_superuser %}
+                    <div class="admin-banner">
+                        <span>This is an admin account</span>
+                        <span class="admin-tag">ADMIN</span>
+                    </div>
+
+                    <div class="container mt-5">
+                        <h3 class="text-center mb-4">Update Admins</h3>
+                        <div class="list-group">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ user.username }}</strong>
+                                    <br>
+                                    Status: 
+                                    {% if request.user.is_superuser %}
+                                        Admin
+                                    {% else %}
+                                        Regular User
+                                    {% endif %}
+                                </div>
+                                <form method="post" action="{% url 'change_admin_status' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="username">Enter Username:</label>
+                                        <input type="text" name="username" id="username" class="form-control" required>
+                                    </div>
+                                    <button type="submit" name="action" value="make_admin" class="btn btn-outline-secondary">
+                                        Make Admin
+                                    </button>
+                                    <button type="submit" name="action" value="remove_admin" class="btn btn-outline-secondary">
+                                        Remove Admin
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Profile Details -->
+                    <form id="profile-edit-form" method="POST">
+                        {% csrf_token %}
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th>Username</th>
+                                    <td>{{ profile.username }}</td>
+                                </tr>
+                                {% for field in profile_fields %}
+                                <tr class="editable-row">
+                                    <th>{{ field.label }}</th>
+                                    <td>
+                                        <span class="display-value">{{ field.value }}</span>
+                                        <input type="text" name="{{ field.name }}" value="{{ field.value }}" class="form-control edit-input" style="display:none;">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary edit-btn edit-toggle ml-2">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div id="edit-controls" style="display:none;" class="text-center">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="button" class="btn btn-secondary cancel-edit ml-2">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

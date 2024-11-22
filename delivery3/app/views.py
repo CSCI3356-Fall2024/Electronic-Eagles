@@ -218,6 +218,7 @@ def edit_campaign_view(request, pk):
 @login_required
 def actions_view(request):
     now = timezone.now()
+    # Get all campaigns ordered by start time
     campaigns = Campaign.objects.filter(permanent=False).order_by('-start_time')
     permanent_campaigns = Campaign.objects.filter(permanent=True)
     user_profile = UserProfile.objects.get(user=request.user)
@@ -225,18 +226,22 @@ def actions_view(request):
 
     campaign_context = []
     upcoming_campaigns = []
+
     for campaign in campaigns:
-        campaign_context.append({
-            'campaign': campaign,
-            'is_active': campaign.start_time <= now <= campaign.end_time,
-            'can_redeem': campaign.can_redeem(request.user)
+        # Check if the campaign is active
+        if campaign.start_time <= now <= campaign.end_time:
+            campaign_context.append({
+                'campaign': campaign,
+                'is_active': True,
+                'can_redeem': campaign.can_redeem(request.user),
+            })
+        elif campaign.start_time > now:  # Add to upcoming campaigns
+            upcoming_campaigns.append(campaign)
 
-        })
-
-    
     return render(request, 'actions.html', {
         'permanent_campaigns': permanent_campaigns,
         'campaign_context': campaign_context,
+        'upcoming_campaigns': upcoming_campaigns,
         'now': now,
         'points': points,
     })

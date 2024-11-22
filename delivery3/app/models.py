@@ -31,6 +31,7 @@ class Campaign(models.Model):
     description = models.TextField()
     points = models.IntegerField()
     cover_photo = models.ImageField(upload_to='campaign_pics/', blank=True, null=True)
+    permanent = models.BooleanField(default=False)
     # New fields for QR code
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False)

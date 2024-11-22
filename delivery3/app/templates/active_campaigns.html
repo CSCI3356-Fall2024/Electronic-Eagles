@@ -6,6 +6,40 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <a href="{% url 'campaign_create' %}" class="btn btn-primary">Create Campaign</a>
         </div>
+        <h2 class="text-center"> Permanent Campaigns </h2>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>QR Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campaign in permanent_campaigns %}
+                    <tr>
+                        <td>{{ campaign.name }}</td>
+                        <td>{{ campaign.description }}</td>
+                        <td class="text-center">
+                            {% if campaign.qr_code %}
+                                <img src="{{ campaign.qr_code.url }}" alt="QR Code" style="width: 100px; height: 100px;">
+                                <br>
+                                <a href="{{ campaign.qr_code.url }}" download class="btn btn-sm btn-secondary mt-2">
+                                    Download QR
+                                </a>
+                            {% else %}
+                                No QR Code
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No permanent campaigns available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
 
         <h2 class="text-center">Active Campaigns</h2>
         <table class="table table-bordered mt-3">
@@ -19,30 +53,30 @@
                 </tr>
             </thead>
             <tbody>
-                {% for campaign in active_campaigns %}
-                <tr>
-                    <td>{{ campaign.name }}</td>
-                    <td>{{ campaign.start_time }}</td>
-                    <td>{{ campaign.end_time }}</td>
-                    <td class="text-center">
-                        {% if campaign.qr_code %}
-                            <img src="{{ campaign.qr_code.url }}" alt="QR Code" style="width: 100px; height: 100px;">
-                            <br>
-                            <a href="{{ campaign.qr_code.url }}" download class="btn btn-sm btn-secondary mt-2">
-                                Download QR
-                            </a>
-                        {% else %}
-                            No QR Code
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{% url 'edit_campaign' campaign.pk %}" class="btn btn-primary">Edit</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">No active campaigns found.</td>
-                </tr>
+                {% for campaign in active_campaigns%}
+                    <tr>
+                        <td>{{ campaign.name }}</td>
+                        <td>{{ campaign.start_time }}</td>
+                        <td>{{ campaign.end_time }}</td>
+                        <td class="text-center">
+                            {% if campaign.qr_code %}
+                                <img src="{{ campaign.qr_code.url }}" alt="QR Code" style="width: 100px; height: 100px;">
+                                <br>
+                                <a href="{{ campaign.qr_code.url }}" download class="btn btn-sm btn-secondary mt-2">
+                                    Download QR
+                                </a>
+                            {% else %}
+                                No QR Code
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'edit_campaign' campaign.pk %}" class="btn btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No active campaigns found.</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -61,29 +95,29 @@
             </thead>
             <tbody>
                 {% for campaign in inactive_campaigns %}
-                <tr>
-                    <td>{{ campaign.name }}</td>
-                    <td>{{ campaign.start_time }}</td>
-                    <td>{{ campaign.end_time }}</td>
-                    <td class="text-center">
-                        {% if campaign.qr_code %}
-                            <img src="{{ campaign.qr_code.url }}" alt="QR Code" style="width: 100px; height: 100px;">
-                            <br>
-                            <a href="{{ campaign.qr_code.url }}" download class="btn btn-sm btn-secondary mt-2">
-                                Download QR
-                            </a>
-                        {% else %}
-                            No QR Code
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{% url 'view_campaign_details' campaign.pk %}" class="btn btn-info">View</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center">No inactive campaigns found.</td>
-                </tr>
+                    <tr>
+                        <td>{{ campaign.name }}</td>
+                        <td>{{ campaign.start_time }}</td>
+                        <td>{{ campaign.end_time }}</td>
+                        <td class="text-center">
+                            {% if campaign.qr_code %}
+                                <img src="{{ campaign.qr_code.url }}" alt="QR Code" style="width: 100px; height: 100px;">
+                                <br>
+                                <a href="{{ campaign.qr_code.url }}" download class="btn btn-sm btn-secondary mt-2">
+                                    Download QR
+                                </a>
+                            {% else %}
+                                No QR Code
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'view_campaign_details' campaign.pk %}" class="btn btn-info">View</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No inactive campaigns found.</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -168,8 +168,8 @@ def edit_campaign_view(request, pk):
 @login_required
 def actions_view(request):
     now = timezone.now()
-    campaigns = Campaign.objects.all().order_by('-start_time')
-    
+    campaigns = Campaign.objects.filter(permanent=False).order_by('-start_time')
+    permanent_campaigns = Campaign.objects.filter(permanent=True)
     # Create a context dictionary with campaign status
     campaign_context = []
     for campaign in campaigns:
@@ -180,6 +180,7 @@ def actions_view(request):
         })
     
     return render(request, 'actions.html', {
+        'permanent_campaigns': permanent_campaigns,
         'campaign_context': campaign_context,
         'now': now
     })

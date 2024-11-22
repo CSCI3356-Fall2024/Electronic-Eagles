@@ -111,6 +111,16 @@
         </div>
     </nav>
     
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %} 
+
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize all dropdowns

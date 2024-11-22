@@ -92,7 +92,25 @@ def profile_view(request):
             messages.success(request, "Profile updated successfully!")
             return redirect('profile')
         else:
-            messages.error(request, "Please correct the errors in the form.")
+            # Remove username from errors if present
+            errors = form.errors.copy()
+            errors.pop('username', None)
+           
+            if errors:
+                # If other errors exist, show them
+                for field, error_list in errors.items():
+                    for error in error_list:
+                        messages.error(request, f"{field.capitalize()}: {error}")
+            else:
+                # If only username error, still try to save valid fields
+                cleaned_data = {k: v for k, v in form.cleaned_data.items() if k != 'username'}
+                for field, value in cleaned_data.items():
+                    setattr(profile, field, value)
+                profile.save()
+                messages.success(request, "Profile updated successfully!")
+            
+            return redirect('profile')
+            
     
     profile_fields = [
         {'name': 'name', 'label': 'Name', 'value': profile.name},

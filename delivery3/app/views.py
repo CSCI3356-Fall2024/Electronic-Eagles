@@ -175,7 +175,9 @@ def actions_view(request):
     now = timezone.now()
     campaigns = Campaign.objects.filter(permanent=False).order_by('-start_time')
     permanent_campaigns = Campaign.objects.filter(permanent=True)
-    # Create a context dictionary with campaign status
+    user_profile = UserProfile.objects.get(user=request.user)
+    points = user_profile.points
+
     campaign_context = []
     for campaign in campaigns:
         campaign_context.append({
@@ -187,7 +189,8 @@ def actions_view(request):
     return render(request, 'actions.html', {
         'permanent_campaigns': permanent_campaigns,
         'campaign_context': campaign_context,
-        'now': now
+        'now': now,
+        'points': points,
     })
 
 @login_required

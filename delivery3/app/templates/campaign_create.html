@@ -17,7 +17,7 @@
                     <h2 class="text-center mb-4">Create New Campaign</h2>
                     <p class="text-center form-required-notice">All fields are required</p>
                     
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table class="table table-borderless">
                             <tbody>

@@ -22,49 +22,17 @@
     <!-- Campaigns List -->
     <div class="container mt-5">
         <div class="row">
-            {% if campaigns %}
-                {% for campaign in campaigns %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        {% if campaign.cover_photo %}
-                            <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 200px; object-fit: cover;">
-                        {% else %}
-                            <div class="card-img-top bg-secondary text-white text-center" style="height: 200px; display: flex; align-items: center; justify-content: center;">
-                                No Cover Photo
-                            </div>
-                        {% endif %}
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ campaign.name }}</h5>
-                            <p class="card-text">{{ campaign.description }}</p>
-                            <div class="text-muted small mb-2">
-                                <div><strong>Start:</strong> {{ campaign.start_time|date:"M d, Y h:i A" }}</div>
-                                <div><strong>End:</strong> {{ campaign.end_time|date:"M d, Y h:i A" }}</div>
-                            </div>
-                            <div class="card-text mb-3">
-                                <span class="badge bg-primary">{{ campaign.points }} Points</span>
-                            </div>
-                            <div class="mt-auto">
-                                {% if campaign.end_time < now %}
-                                    <button class="btn btn-secondary w-100" disabled>Campaign Ended</button>
-                                {% elif campaign.start_time > now %}
-                                    <button class="btn btn-secondary w-100" disabled>Campaign Starts Soon</button>
-                                {% elif user in campaign.redeemed_users.all %}
-                                    <button class="btn btn-success w-100" disabled>Redeemed</button>
-                                {% else %}
-                                    <form action="{% url 'rewards' %}" method="POST">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
-                                        <button type="submit" class="btn btn-primary w-100" style="color: white">Redeem</button>
-                                    </form>
-                                {% endif %}
-                            </div>
-                {% endfor %}
-            {% endif %}
-    <div class="row">
         {% if campaign_context %}
             {% for ctx in campaign_context %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
+                    {% if campaign.cover_photo %}
+                        <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-secondary text-white text-center" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                            No Cover Photo
+                        </div>
+                    {% endif %}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ ctx.campaign.name }}</h5>
                         <p class="card-text">{{ ctx.campaign.description }}</p>

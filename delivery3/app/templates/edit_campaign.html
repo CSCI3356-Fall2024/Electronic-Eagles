@@ -17,7 +17,7 @@
                     <h2 class="text-center mb-4">Edit Campaign</h2>
                     <p class="text-center form-required-notice">All fields are required</p>
                     
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table class="table table-borderless">
                             <tbody>
@@ -47,12 +47,6 @@
                                             <div class="d-flex align-items-center">
                                                 <!-- Upload Photo Button -->
                                                 <input type="file" id="cover-photo" name="cover_photo" class="form-control" accept="image/*">
-                                                <!-- Display File Name or "No photo available" -->]
-                                                {% if form.instance.cover_photo %}
-                                                    <span class="ms-3">{{ form.instance.cover_photo.name }}</span>
-                                                {% else %}
-                                                    <span class="ms-3 text-muted">No photo available</span>
-                                                {% endif %}
                                             </div>
                                         </td>
                                 </tr>

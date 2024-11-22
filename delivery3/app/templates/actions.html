@@ -20,11 +20,19 @@
     </div>
 
     <!-- Campaigns List -->
-    <div class="row">
+    <div class="container mt-5">
+        <div class="row">
         {% if campaign_context %}
             {% for ctx in campaign_context %}
             <div class="col-md-4 mb-4">
                 <div class="card h-100 shadow-sm">
+                    {% if campaign.cover_photo %}
+                        <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-secondary text-white text-center" style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                            No Cover Photo
+                        </div>
+                    {% endif %}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ ctx.campaign.name }}</h5>
                         <p class="card-text">{{ ctx.campaign.description }}</p>

@@ -118,11 +118,11 @@ def logout_view(request):
 @user_passes_test(lambda u: u.is_superuser)
 def campaign_create_view(request):
     if request.method == 'POST':
-        form = forms.CampaignForm(request.POST)
+        form = forms.CampaignForm(request.POST, request.FILES)
         if form.is_valid():
             campaign = form.save(commit=False)
-            messages.success(request, "Campaign created successfully!")
             campaign.save()
+            messages.success(request, "Campaign created successfully!")
             return redirect('active_campaigns')
         else:
             messages.error(request, "Please correct the errors below.")
@@ -130,7 +130,6 @@ def campaign_create_view(request):
         form = forms.CampaignForm()
 
     return render(request, 'campaign_create.html', {'form': form})
-
 @login_required
 def active_campaigns_view(request):
     now = timezone.now()
@@ -151,7 +150,11 @@ def active_campaigns_view(request):
 def edit_campaign_view(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
     if request.method == 'POST':
-        form = CampaignForm(request.POST, instance=campaign)
+        if 'delete_campaign' in request.POST:
+            campaign.delete()
+            messages.success(request, "Campaign deleted successfully!")
+            return redirect('active_campaigns')
+        form = CampaignForm(request.POST, request.FILES, instance=campaign)
         if form.is_valid():
             form.save()
             messages.success(request, "Campaign updated successfully!")

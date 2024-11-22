@@ -30,6 +30,8 @@ class Campaign(models.Model):
     end_time = models.DateTimeField()
     description = models.TextField()
     points = models.IntegerField()
+    cover_photo = models.ImageField(upload_to='campaign_pics/', blank=True, null=True)
+    # New fields for QR code
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False)
     redeemed_users = models.ManyToManyField(User, blank=True, related_name='redeemed_campaigns')

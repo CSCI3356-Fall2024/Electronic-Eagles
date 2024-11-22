@@ -79,7 +79,33 @@ def landing_page(request):
 @login_required
 def profile_view(request):
     profile = get_object_or_404(UserProfile, user=request.user)
-    return render(request, 'profile.html', {'profile': profile})
+    if request.method == 'POST':
+        if 'profile_picture' in request.FILES:
+            profile.profile_picture = request.FILES['profile_picture']
+            profile.save()
+            messages.success(request, "Profile picture updated successfully!")
+            return redirect('profile')
+        
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('profile')
+        else:
+            messages.error(request, "Please correct the errors in the form.")
+    
+    profile_fields = [
+        {'name': 'name', 'label': 'Name', 'value': profile.name},
+        {'name': 'school', 'label': 'School', 'value': profile.school},
+        {'name': 'graduation_year', 'label': 'Graduation Year', 'value': profile.graduation_year},
+        {'name': 'major1', 'label': 'Primary Major', 'value': profile.major1},
+        {'name': 'major2', 'label': 'Second Major', 'value': profile.major2 or 'N/A'}
+    ]
+    
+    return render(request, 'profile.html', {
+        'profile': profile,
+        'profile_fields': profile_fields
+    })
 
 @login_required
 def profile_setup(request):

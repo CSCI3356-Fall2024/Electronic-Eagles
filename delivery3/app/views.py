@@ -246,13 +246,12 @@ def rewards_view(request):
         elif 'points_to_subtract' in request.POST and 'item_name' in request.POST:
             points_to_subtract = int(request.POST.get('points_to_subtract', 0))
             item_name = request.POST.get('item_name')
-<<<<<<< HEAD
-            
+            rewardResponse = f'Not enough points for {item_name} need {points_to_subtract - user_profile.points} more points!'
             if user_profile.points >= points_to_subtract:
                 with transaction.atomic():
                     user_profile.points -= points_to_subtract
                     user_profile.save()
-                    
+                    rewardResponse = f'You have succesfully redeemed {item_name} for {points_to_subtract} points! Check email for more details.'
                     try:
                         user = request.user
                         email_address = EmailAddress.objects.filter(user=user, primary=True).first()
@@ -273,9 +272,9 @@ def rewards_view(request):
             else:
                 messages.error(request, "Not enough points available.")
                 
-            return render(request, 'rewards.html', {'points': user_profile.points})
-=======
-            rewardResponse = f'Not enough points for {item_name} need {points_to_subtract - user_profile.points} more points!'
+    return render(request, 'rewards.html', {'points': user_profile.points, 'rewardResponse': rewardResponse})
+
+"""  rewardResponse = f'Not enough points for {item_name} need {points_to_subtract - user_profile.points} more points!'
             if user_profile.points >= points_to_subtract:
                 user_profile.points -= points_to_subtract
                 user_profile.save()
@@ -286,7 +285,7 @@ def rewards_view(request):
                    user = request.user
                    email_address = EmailAddress.objects.filter(user=user, primary=True).first()
                    send_mail(
-                       'Redeemed event',
+                       'Redeemed reward',
                        f'You have successfully redeemed {item_name} for {points_to_subtract} points! Thank you for keeping the environment clean. Your efforts are not going unnoticed. The dev team here at Eco Edu hopes you enjoy your reward.',
                        'blest@bc.edu',
                        [email_address.email],
@@ -302,5 +301,4 @@ def rewards_view(request):
                 messages.error(request, "Not enough points")
         
 
-    return render(request, 'rewards.html', {'points': user_profile.points, 'rewardResponse': rewardResponse})
->>>>>>> origin/main
+    return render(request, 'rewards.html', {'points': user_profile.points, 'rewardResponse': rewardResponse})"""

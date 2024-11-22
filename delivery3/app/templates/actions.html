@@ -65,7 +65,7 @@
  
 
 <div class="mt-5">
-    <h2>Active Campaigns</h2>
+    <h2>Active</h2>
     <div class="row">
         {% if campaign_context %}
             {% for ctx in campaign_context %}
@@ -124,7 +124,7 @@
 
 <!-- Upcoming Campaigns Section -->
 <div class="mt-5">
-    <h2>Upcoming Campaigns</h2>
+    <h2>Upcoming</h2>
     {% if campaign_context %}
         {% for ctx in campaign_context %}
             {% if ctx.campaign.start_time > now %}

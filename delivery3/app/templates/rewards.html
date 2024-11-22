@@ -237,13 +237,12 @@
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(document).on('click', '.buy', function() {
-    console.log("Buy clicked");
-    $('.bottom').addClass('clicked');
+$(document).on('click', '.buy', function() {
+    $(this).closest('.container').find('.bottom').addClass('clicked');
 });
 
 $(document).on('click', '.remove', function() {
-    $('.bottom').removeClass('clicked');
+    $(this).closest('.container').find('.bottom').removeClass('clicked');
 });
 
 </script>
@@ -305,7 +304,7 @@ $(document).on('click', '.remove', function() {
                 <h1>School Store Gift Card $15</h1>
                 <p>2,500 Points</p>
               </div>
-              <div class="buy"><i class="material-icons">Redeem</i></div>
+            <div class="buy"><i class="material-icons">Redeem</i></div>
             </div>
             <div class="right">
                 <form action="{% url 'rewards' %}" method="POST">

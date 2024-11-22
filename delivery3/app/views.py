@@ -329,6 +329,7 @@ def rewards_view(request):
                 except Exception as e:
                     messages.error(request, f"Points redeemed but failed to send email: {str(e)}")
 
+            return redirect('rewards')
         else:
             messages.error(request, "No item name or point total.")
 

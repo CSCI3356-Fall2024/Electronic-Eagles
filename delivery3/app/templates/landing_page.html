@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 <div class="hero-section text-center py-5" style="background-color: #4a4a4a; color: white;">
     {% if user.is_authenticated %}
@@ -67,40 +67,66 @@
     <h2 class="text-center mb-4">About Our Sustainability Initiatives</h2>
     <div class="row">
         <div class="col-md-6 mb-4">
-            <h3>Green2Go</h3>
-            <p>
-                Boston College's reusable container program helps reduce waste by offering students a convenient way to enjoy takeout meals sustainably.
-            </p>
+            <div class="card">
+                <img src="{% static 'greentogo.png' %}" class="card-img-top" alt="Green2Go">
+                <div class="card-body">
+                    <h3 class="card-title">Green2Go</h3>
+                    <p class="card-text">
+                        Boston College's reusable container program helps reduce waste by offering students a convenient way to enjoy takeout meals sustainably.
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="col-md-6 mb-4">
-            <h3>SaveThatStuff</h3>
-            <p>
-                A composting initiative that helps reduce food waste across campus by diverting compostable materials from landfills.
-            </p>
+            <div class="card">
+                <img src="{% static 'SaveThatStuff.jpg' %}" class="card-img-top" alt="SaveThatStuff">
+                <div class="card-body">
+                    <h3 class="card-title">SaveThatStuff</h3>
+                    <p class="card-text">
+                        A composting initiative that helps reduce food waste across campus by diverting compostable materials from landfills.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 mb-4">
-            <h3>LeanPath</h3>
-            <p>
-                A food waste tracking system that enables dining services to monitor and minimize food waste effectively.
-            </p>
+            <div class="card">
+                <img src="{% static 'LeanPath.jpeg' %}" class="card-img-top" alt="LeanPath">
+                <div class="card-body">
+                    <h3 class="card-title">LeanPath</h3>
+                    <p class="card-text">
+                        A food waste tracking system that enables dining services to monitor and minimize food waste effectively.
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="col-md-6 mb-4">
-            <h3>FRESH Menu</h3>
-            <p>
-                Featuring locally sourced and sustainably prepared meals, the FRESH menu prioritizes healthy, eco-friendly dining options for students.
-            </p>
+            <div class="card">
+                <img src="{% static 'FRESH.jpg' %}" class="card-img-top" alt="FRESH Menu">
+                <div class="card-body">
+                    <h3 class="card-title">FRESH Menu</h3>
+                    <p class="card-text">
+                        Featuring locally sourced and sustainably prepared meals, the FRESH menu prioritizes healthy, eco-friendly dining options for students.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12 mb-4">
-            <h3>Every Bite Counts</h3>
-            <p>
-                Encouraging students to make mindful choices to minimize food waste and reduce their environmental footprint.
-            </p>
+            <div class="card">
+                <img src="{% static 'EveryBiteCounts.jpg' %}" class="card-img-top" alt="Every Bite Counts">
+                <div class="card-body">
+                    <h3 class="card-title">Every Bite Counts</h3>
+                    <p class="card-text">
+                        Encouraging students to make mindful choices to minimize food waste and reduce their environmental footprint.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 {% endif %}
 {% endblock %}

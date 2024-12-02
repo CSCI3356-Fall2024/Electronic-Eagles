@@ -375,8 +375,10 @@ def rewards_view(request):
 @login_required
 def activity_view(request):
     user = request.user
+    user_profile = user.userprofile
+    user_points = user_profile.points
     # Get al activity logs related to the user
     activities = ActivityLog.objects.filter(user=user).order_by('-timestamp')
     
-    return render(request, 'activity.html', {'activities': activities})
+    return render(request, 'activity.html', {'activities': activities, 'user_points': user_points})
     

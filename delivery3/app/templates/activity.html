@@ -3,6 +3,10 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="text-center mb-4">Your Activity</h2>
+    <div class="text-center mb-4">
+        <h4>You currently have:</h4>
+        <h1 class="display-4">{{ user_points }} Points</h1>
+    </div>
     <div class="card shadow-sm">
         <div class="card-body">
             {% if activities %}

@@ -337,7 +337,6 @@ def rewards_view(request):
             if user_profile.points >= points_to_subtract:
                 user_profile.points -= points_to_subtract
                 user_profile.save()
-                print(f"Logging activity for user {request.user.username}")
 
                 ActivityLog.objects.create(
                     user=request.user,

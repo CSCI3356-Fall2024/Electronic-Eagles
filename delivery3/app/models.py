@@ -97,3 +97,12 @@ class ActivityLog(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.activity_type} - {self.points} points"
+    
+class Reward(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    points_required = models.PositiveIntegerField()
+    image = models.ImageField(upload_to='rewards/', blank=True, null=True)
+
+    def __str__(self):
+        return self.name

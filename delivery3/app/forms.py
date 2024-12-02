@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from allauth.account.forms import SignupForm
-from .models import UserProfile, Campaign
+from .models import UserProfile, Campaign, Reward
 from django.contrib.auth.models import User
 
 class UserProfileForm(forms.ModelForm):
@@ -31,3 +31,8 @@ class CampaignForm(forms.ModelForm):
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
+
+class RewardForm(forms.ModelForm):
+    class Meta:
+        model = Reward
+        fields = ['name', 'description', 'points_required', 'image']

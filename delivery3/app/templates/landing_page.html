@@ -15,12 +15,12 @@
 
 {% if user.is_authenticated %}
 <div class="container my-5">
-    <h2 class="text-center mb-4">Leaderboard</h2>
-    <div class="row justify-content-center">
+    <div class="row g-4">
+        <!-- Leaderboard Section -->
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Top Sustainability Champions</h5>
+                    <h5 class="card-title text-center">Leaderboard</h5>
                     <table class="table table-striped mt-3">
                         <thead>
                             <tr>
@@ -37,6 +37,26 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- News Section -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Sustainability News</h5>
+                    <p>
+                        Stay informed about Boston College's sustainability initiatives, including Green2Go, LeanPath, and other programs designed to promote eco-friendly dining practices.
+                    </p>
+                    <div class="text-center mt-4">
+                        <a href="https://www.bc.edu/content/bc-web/offices/auxiliary-services/sites/dining/about/sustainability.html" 
+                           class="btn btn-primary w-100" 
+                           target="_blank" 
+                           rel="noopener noreferrer">
+                           Visit Sustainability News
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

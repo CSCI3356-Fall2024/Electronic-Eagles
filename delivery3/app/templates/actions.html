@@ -119,32 +119,34 @@
 <!-- Upcoming Campaigns Section -->
 <div class="mt-5">
     <h2>Upcoming</h2>
-    {% if campaign_context %}
-        {% for ctx in campaign_context %}
-            {% if ctx.campaign.start_time > now %}
-                    <div class="d-flex overflow-auto py-3" style="gap: 1rem;">
-                        <div class="card shadow-sm" style="min-width: 300px; flex-shrink: 0;">
-                            {% if ctx.campaign.cover_photo %}
-                                <img src="{{ ctx.campaign.cover_photo.url }}" class="card-img-top" alt="{{ ctx.campaign.name }}" style="height: 150px; object-fit: cover;">
-                            {% else %}
-                                <div class="card-img-top bg-secondary text-white text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
-                                    No Cover Photo
-                                </div>
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title">{{ ctx.campaign.name }}</h5>
-                                <p class="card-text">{{ ctx.campaign.description }}</p>
-                                <div class="text-muted small">
-                                    <div><strong>Starts On:</strong> {{ ctx.campaign.start_time|date:"M d, Y h:i A" }}</div>
-                                </div>
+    <div class="row">
+        {% if upcoming_campaigns %}
+            {% for campaign in upcoming_campaigns %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {% if campaign.cover_photo %}
+                            <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-secondary text-white text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
+                                No Cover Photo
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ campaign.name }}</h5>
+                            <p class="card-text">{{ campaign.description }}</p>
+                            <div class="text-muted small">
+                                <div><strong>Starts On:</strong> {{ campaign.start_time|date:"M d, Y h:i A" }}</div>
                             </div>
                         </div>
                     </div>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <p class="text-center">No upcoming campaigns </p>
-    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info text-center">No upcoming campaigns available.</div>
+            </div>
+        {% endif %}
+    </div>
 </div>
 
 <!-- Required JS libraries -->

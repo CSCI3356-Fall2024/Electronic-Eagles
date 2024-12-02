@@ -9,10 +9,40 @@
     {% else %}
         <h1>Welcome to Green Campus Dining</h1>
         <p>Enhancing student dining experiences with sustainability initiatives!</p>
+        <a href="#" class="btn btn-success">Learn More</a>
     {% endif %}
 </div>
 
-{% if not user.is_authenticated %}
+{% if user.is_authenticated %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Leaderboard</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Top Sustainability Champions</h5>
+                    <table class="table table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>{{ user.userprofile.name }}</td>
+                                <td>{{ user.userprofile.points }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="container my-5">
     <h2 class="text-center mb-4">About Our Sustainability Initiatives</h2>
     <div class="row">

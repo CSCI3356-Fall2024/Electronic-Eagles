@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from datetime import timedelta
 from .models import UserProfile
 from .forms import UserProfileForm, CampaignForm
-from .models import UserProfile, Campaign
+from .models import UserProfile, Campaign, ActivityLog
 from django.db import transaction
 from app import forms
 from django.http import JsonResponse
@@ -48,7 +48,20 @@ def validate_campaign(request, campaign_id):
             user_profile = request.user.userprofile
             user_profile.points += campaign.points
             user_profile.save()
-            
+
+            # Safely log the activity
+            try:
+                ActivityLog.objects.create(
+                    user=request.user,
+                    activity_type="EARNED",
+                    description=f"Earned {campaign.points} points from campaign {campaign.name}.",
+                    points=f"+{campaign.points}",
+                    timestamp=timezone.now,
+                )
+                print(f"Activity logged for {request.user.username}: Earned {campaign.points} points", flush=True)
+            except Exception as e:
+                print(f"Failed to log activity: {e}", flush=True)
+
             # Add user to redeemed users
             campaign.redeemed_users.add(request.user)
         
@@ -305,6 +318,14 @@ def rewards_view(request):
                     user_profile.save()
                     campaign.redeemed_users.add(request.user)
                     messages.success(request, "Points redeemed successfully!")
+                    print(f"Logging activity for user {request.user.username}")
+
+                    ActivityLog.objects.create(
+                        user=request.user,
+                        activity_type='EARNED',
+                        points=campaign.points,
+                        description=f"Earned {campaign.points} points from campaign: {campaign.name}"
+                    )
                 else:
                     messages.error(request, "You have already redeemed this campaign.")
                 return redirect('actions')
@@ -316,6 +337,15 @@ def rewards_view(request):
             if user_profile.points >= points_to_subtract:
                 user_profile.points -= points_to_subtract
                 user_profile.save()
+                print(f"Logging activity for user {request.user.username}")
+
+                ActivityLog.objects.create(
+                    user=request.user,
+                    activity_type='REDEEMED',
+                    points=f"-{points_to_subtract}",
+                    description=f"Redeemed {points_to_subtract} points for reward: {item_name}"
+                )
+
                 rewardResponse = f'You have succesfully redeemed {item_name} for {points_to_subtract} points! Check email for more details.'
                 try:
                     user = request.user
@@ -341,4 +371,12 @@ def rewards_view(request):
             
     
     return render(request, 'rewards.html', {'points': user_profile.points, 'rewardResponse': rewardResponse})
+
+@login_required
+def activity_view(request):
+    user = request.user
+    # Get al activity logs related to the user
+    activities = ActivityLog.objects.filter(user=user).order_by('-timestamp')
+    
+    return render(request, 'activity.html', {'activities': activities})
     

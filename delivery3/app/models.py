@@ -82,3 +82,18 @@ class Campaign(models.Model):
             self.start_time <= now <= self.end_time and
             user not in self.redeemed_users.all()
         )
+    
+class ActivityLog(models.Model):
+    ACTIVITY_CHOICES = [
+        ('EARNED', 'Earned Points'),
+        ('REDEEMED', 'Redeemed Points')
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=10, choices=ACTIVITY_CHOICES, default="Default Action")
+    points = models.CharField(default="0", max_length=10)
+    description = models.TextField(default="Default Action")
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.activity_type} - {self.points} points"

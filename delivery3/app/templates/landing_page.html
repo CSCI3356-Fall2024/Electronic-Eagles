@@ -63,6 +63,29 @@
     </div>
 </div>
 {% else %}
+<style>
+    .card {
+    width: 100%; /* Let the card fill the container */
+    max-width: 500px; /* Optional: Set a maximum width */
+    height: auto; /* Adjust height automatically based on content */
+    margin: 0 auto; /* Center the card */
+    }
+
+    .card-img-top {
+        width: 100%; /* Ensures the image spans the card width */
+        height: auto; /* Let the height adjust proportionally */
+        object-fit: cover; /* Ensures proper cropping */
+        max-height: 200px; /* Optional: Prevent images from becoming too tall */
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: calc(100% - 200px); /* Adjusts for image height */
+        padding: 15px;
+    }
+</style>
 <div class="container my-5">
     <h2 class="text-center mb-4">About Our Sustainability Initiatives</h2>
     <div class="row">
@@ -72,7 +95,7 @@
                 <div class="card-body">
                     <h3 class="card-title">Green2Go</h3>
                     <p class="card-text">
-                        Boston College's reusable container program helps reduce waste by offering students a convenient way to enjoy takeout meals sustainably.
+                        Boston College's reusable container program reduces waste by offering students a convenient way to enjoy takeout meals.
                     </p>
                 </div>
             </div>
@@ -107,7 +130,7 @@
                 <div class="card-body">
                     <h3 class="card-title">FRESH Menu</h3>
                     <p class="card-text">
-                        Featuring locally sourced and sustainably prepared meals, the FRESH menu prioritizes healthy, eco-friendly dining options for students.
+                        Featuring locally sourced and sustainably prepared meals, the FRESH menu prioritizes healthy, eco-friendly dining options.
                     </p>
                 </div>
             </div>

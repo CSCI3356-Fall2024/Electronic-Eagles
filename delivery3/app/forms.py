@@ -28,9 +28,31 @@ class CampaignForm(forms.ModelForm):
         model = Campaign
         fields = ['name', 'start_time', 'end_time', 'description', 'points', 'cover_photo', 'permanent']
         widgets = {
-            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'start_time': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'end_time': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control'
+            }),
+            'permanent': forms.CheckboxInput(attrs={
+                'class': 'form-check-input',
+                'id': 'permanent-checkbox'
+            })
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        permanent = cleaned_data.get('permanent')
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+
+        if not permanent and (not start_time or not end_time):
+            raise ValidationError('Start and end times are required for non-permanent campaigns.')
+
+        return cleaned_data
+
 
 class RewardForm(forms.ModelForm):
     class Meta:

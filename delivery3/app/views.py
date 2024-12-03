@@ -14,6 +14,7 @@ from app import forms
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
+from django.utils.timezone import now
 from allauth.account.models import EmailAddress
 
 @login_required
@@ -205,7 +206,8 @@ def active_campaigns_view(request):
     return render(request, 'active_campaigns.html', {
         'active_campaigns': active_campaigns,
         'inactive_campaigns': inactive_campaigns,
-        'permanent_campaigns': permanent_campaigns
+        'permanent_campaigns': permanent_campaigns,
+        'now': now
     })
 
 @login_required

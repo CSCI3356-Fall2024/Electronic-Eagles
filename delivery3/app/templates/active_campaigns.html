@@ -111,7 +111,11 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{% url 'view_campaign_details' campaign.pk %}" class="btn btn-info">View</a>
+                            {% if campaign.start_time > now %}
+                                <a href="{% url 'edit_campaign' campaign.pk %}" class="btn btn-primary">Edit</a>
+                            {% else %}
+                                <a href="{% url 'view_campaign_details' campaign.pk %}" class="btn btn-info">View</a>
+                            {% endif %}
                         </td>
                     </tr>
                     {% empty %}

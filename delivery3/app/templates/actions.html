@@ -36,9 +36,7 @@
                         {% if campaign.cover_photo %}
                             <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 150px; object-fit: cover;">
                         {% else %}
-                            <div class="card-img-top bg-secondary text-white text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
-                                No Cover Photo
-                            </div>
+                             <img src="{% static 'campaignDefault.png' %}" class="card-img-top" alt="Default Cover Photo" style="height: 150px; object-fit: cover;">
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ campaign.name }}</h5>
@@ -75,9 +73,7 @@
                             {% if ctx.campaign.cover_photo %}
                                 <img src="{{ ctx.campaign.cover_photo.url }}" class="card-img-top" alt="{{ ctx.campaign.name }}" style="height: 150px; object-fit: cover;">
                             {% else %}
-                                <div class="card-img-top bg-secondary text-white text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
-                                    No Cover Photo
-                                </div>
+                                <img src="{% static 'campaignDefault.png' %}" class="card-img-top" alt="Default Cover Photo" style="height: 150px; object-fit: cover;">
                             {% endif %}
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">{{ ctx.campaign.name }}</h5>
@@ -127,9 +123,7 @@
                         {% if campaign.cover_photo %}
                             <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 150px; object-fit: cover;">
                         {% else %}
-                            <div class="card-img-top bg-secondary text-white text-center" style="height: 150px; display: flex; align-items: center; justify-content: center;">
-                                No Cover Photo
-                            </div>
+                            <img src="{% static 'campaignDefault.png' %}" class="card-img-top" alt="Default Cover Photo" style="height: 150px; object-fit: cover;">
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ campaign.name }}</h5>

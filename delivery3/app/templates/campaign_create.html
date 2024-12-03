@@ -42,8 +42,13 @@
                                     <td><input type="number" id="points" name="points" class="form-control" min="0" required></td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cover-photo">Cover Photo <span class="required-asterisk">*</span></label></th>
-                                    <td><input type="file" id="cover-photo" name="cover_photo" class="form-control" accept="image/*" required></td>
+                                    <th><label for="cover-photo">Cover Photo</label></th>
+                                    <td>
+                                        <input type="file" id="cover-photo" name="cover_photo" class="form-control" accept="image/*">
+                                        <small class="form-text text-muted">
+                                            If no photo is uploaded, a default cover photo will be used.
+                                        </small>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

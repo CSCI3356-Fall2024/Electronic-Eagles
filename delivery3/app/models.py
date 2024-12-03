@@ -72,16 +72,18 @@ class Campaign(models.Model):
 
     @property
     def is_active(self):
+        if self.permanent:
+            return True
         now = timezone.now()
         return self.start_time <= now <= self.end_time
 
     def can_redeem(self, user):
         """Check if a user can redeem this campaign"""
-        now = timezone.now()
-        return (
-            self.start_time <= now <= self.end_time and
-            user not in self.redeemed_users.all()
-        )
+        if not self.permanent:
+            now = timezone.now()
+            if not (self.start_time <= now <= self.end_time):
+                return False
+        return user not in self.redeemed_users.all()
     
 class ActivityLog(models.Model):
     ACTIVITY_CHOICES = [

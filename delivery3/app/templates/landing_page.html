@@ -9,7 +9,7 @@
     {% else %}
         <h1>Welcome to Green Campus Dining</h1>
         <p>Enhancing student dining experiences with sustainability initiatives!</p>
-        <a href="#" class="btn btn-success">Learn More</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-success">Sign Up</a>
     {% endif %}
 </div>
 
@@ -92,24 +92,24 @@
 {% else %}
 <style>
     .card {
-    width: 100%; /* Let the card fill the container */
-    max-width: 500px; /* Optional: Set a maximum width */
-    height: auto; /* Adjust height automatically based on content */
-    margin: 0 auto; /* Center the card */
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        margin: 0 auto;
     }
 
     .card-img-top {
-        width: 100%; /* Ensures the image spans the card width */
-        height: auto; /* Let the height adjust proportionally */
-        object-fit: cover; /* Ensures proper cropping */
-        max-height: 200px; /* Optional: Prevent images from becoming too tall */
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        max-height: 200px;
     }
 
     .card-body {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: calc(100% - 200px); /* Adjusts for image height */
+        height: calc(100% - 200px);
         padding: 15px;
     }
 </style>
@@ -177,6 +177,5 @@
         </div>
     </div>
 </div>
-
 {% endif %}
 {% endblock %}

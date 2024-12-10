@@ -23,18 +23,11 @@ def validate_campaign(request, campaign_id):
     try:
         campaign = Campaign.objects.get(unique_id=campaign_id)
         
-        # Check if campaign is active
-        now = timezone.now()
-        if campaign.start_time > now:
+        # Check if campaign is active (handles both permanent and regular campaigns)
+        if not campaign.is_active:
             return JsonResponse({
                 'success': False,
-                'message': 'This campaign has not started yet.'
-            })
-        
-        if campaign.end_time < now:
-            return JsonResponse({
-                'success': False,
-                'message': 'This campaign has ended.'
+                'message': 'This campaign is not currently active.'
             })
 
         # Check if user has already redeemed
@@ -44,26 +37,24 @@ def validate_campaign(request, campaign_id):
                 'message': 'You have already redeemed this campaign.'
             })
         
-        # Get user profile and add points
+        # Award points and log activity
         with transaction.atomic():
             user_profile = request.user.userprofile
             user_profile.points += campaign.points
             user_profile.save()
 
-            # Safely log the activity
+            # Log the activity
             try:
                 ActivityLog.objects.create(
                     user=request.user,
                     activity_type="EARNED",
-                    description=f"Earned {campaign.points} points from campaign {campaign.name}.",
+                    description=f"Earned {campaign.points} points from {campaign.name} {'(Permanent Campaign)' if campaign.permanent else ''}.",
                     points=f"+{campaign.points}",
-                    timestamp=timezone.now,
+                    timestamp=timezone.now(),
                 )
-                print(f"Activity logged for {request.user.username}: Earned {campaign.points} points", flush=True)
             except Exception as e:
                 print(f"Failed to log activity: {e}", flush=True)
 
-            # Add user to redeemed users
             campaign.redeemed_users.add(request.user)
         
         return JsonResponse({
@@ -113,7 +104,7 @@ def profile_view(request):
             # Remove username from errors if present
             errors = form.errors.copy()
             errors.pop('username', None)
-           
+
             if errors:
                 # If other errors exist, show them
                 for field, error_list in errors.items():
@@ -183,10 +174,18 @@ def campaign_create_view(request):
     if request.method == 'POST':
         form = forms.CampaignForm(request.POST, request.FILES)
         if form.is_valid():
-            campaign = form.save(commit=False)
-            campaign.save()
-            messages.success(request, "Campaign created successfully!")
-            return redirect('active_campaigns')
+            try:
+                with transaction.atomic():
+                    campaign = form.save(commit=False)
+                    if campaign.permanent:
+                        # Set far future dates for permanent campaigns
+                        campaign.start_time = timezone.now()
+                        campaign.end_time = timezone.now() + timezone.timedelta(days=36500)  # 100 years
+                    campaign.save()
+                messages.success(request, "Campaign created successfully!")
+                return redirect('active_campaigns')
+            except Exception as e:
+                messages.error(request, str(e))
         else:
             messages.error(request, "Please correct the errors below.")
     else:

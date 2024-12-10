@@ -86,9 +86,13 @@ def validate_campaign(request, campaign_id):
 def landing_page(request):
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
+        news_campaigns = Campaign.objects.filter(newsfeed=True).order_by('-start_time')
         if not profile.is_complete:
             return redirect('profile_setup')
-    return render(request, 'landing_page.html')
+    return render(request, 'landing_page.html', {
+        'news_campaigns' : news_campaigns,
+    })
+
 
 @login_required
 def profile_view(request):
@@ -382,4 +386,15 @@ def activity_view(request):
     activities = ActivityLog.objects.filter(user=user).order_by('-timestamp')
     
     return render(request, 'activity.html', {'activities': activities, 'user_points': user_points})
+
+@login_required
+def campaign_activity_view(request):
+    user = request.user
+    user_profile = user.userprofile
+    user_points = user_profile.points
+    # Get al activity logs related to the user
+    activities = ActivityLog.objects.filter(user=user).order_by('-timestamp')
+    
+    return render(request, 'activity.html', {'activities': activities, 'user_points': user_points})
+    
     

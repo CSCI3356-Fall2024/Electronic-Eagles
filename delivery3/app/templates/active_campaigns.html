@@ -13,7 +13,8 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>QR Code</th>
-                </tr>
+                    <th>Actions</th>
+
             </thead>
             <tbody>
                 {% for campaign in permanent_campaigns %}
@@ -30,6 +31,9 @@
                             {% else %}
                                 No QR Code
                             {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'edit_campaign' campaign.pk %}" class="btn btn-primary">Edit</a>
                         </td>
                     </tr>
                 {% empty %}

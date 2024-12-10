@@ -46,16 +46,43 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title text-center">Sustainability News</h5>
-                    <p>
-                        Stay informed about Boston College's sustainability initiatives, including Green2Go, LeanPath, and other programs designed to promote eco-friendly dining practices.
-                    </p>
-                    <div class="text-center mt-4">
-                        <a href="https://www.bc.edu/content/bc-web/offices/auxiliary-services/sites/dining/about/sustainability.html" 
-                           class="btn btn-primary w-100" 
-                           target="_blank" 
-                           rel="noopener noreferrer">
-                           Visit Sustainability News
-                        </a>
+                    <div class="news-feed-container">
+                        {% if news_campaigns %}
+                        <div class="d-flex justify-content-center">
+                            <div class="container py-3" style="max-height: 500px; overflow-y: auto;">
+                                {% for campaign in news_campaigns %}
+                                <div class="card shadow-sm mb-3">
+                                    {% if campaign.cover_photo %}
+                                        <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 160px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'campaignDefault.png' %}" class="card-img-top" alt="Default Cover Photo" style="height: 150px; object-fit: cover;">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ campaign.name }}</h5>
+                                        <p class="card-text">{{ campaign.description }}</p>
+                                        <div class="text-muted small mb-2">
+                                            <div><strong>Start:</strong> {{ campaign.start_time|date:"M d, Y h:i A" }}</div>
+                                            <div><strong>End:</strong> {{ campaign.end_time|date:"M d, Y h:i A" }}</div>
+                                        </div>
+                                        <div class="card-text mb-3">
+                                            <span class="badge bg-primary">{{ campaign.points }} Points</span>
+                                        </div>
+                                        <div class="mt-auto">
+                                            <!-- Button linking to the activity page -->
+                                            <a href="{% url 'actions' %}" class="btn btn-primary w-100">
+                                                Redeem Now
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info text-center">
+                            No news campaigns available at the moment.
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

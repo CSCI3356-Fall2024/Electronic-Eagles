@@ -21,6 +21,8 @@ from django.conf.urls.static import static
 from app import views
 
 urlpatterns = [
+    path('actions', views.actions_view, name='actions'),
+    path('activity/', views.activity_view, name='activity'),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', views.landing_page, name='landing_page'),
@@ -29,14 +31,12 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('campaign/create/', views.campaign_create_view, name='campaign_create'),
     path('campaign', views.active_campaigns_view, name='active_campaigns'),
-    path('actions', views.actions_view, name='actions'),
     path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
     path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
     path('change_admin_status/', views.change_admin_status, name='change_admin_status'),
     path('campaign/<int:pk>/view/', views.view_campaign_details, name='view_campaign_details'),
     path('rewards/', views.rewards_view, name='rewards'),
     path('validate-campaign/<uuid:campaign_id>/', views.validate_campaign, name='validate_campaign'),
-    path('activity/', views.activity_view, name='activity')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

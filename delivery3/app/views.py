@@ -75,9 +75,14 @@ def validate_campaign(request, campaign_id):
         })
 
 def landing_page(request):
+    now = timezone.now()
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
-        news_campaigns = Campaign.objects.filter(newsfeed=True).order_by('-start_time')
+        news_campaigns = Campaign.objects.filter(
+            newsfeed=True, 
+            start_time__lte=now,
+            end_time__gt=now
+        ).order_by('-start_time')
         if not profile.is_complete:
             return redirect('profile_setup')
     return render(request, 'landing_page.html', {

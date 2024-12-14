@@ -6,9 +6,8 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from datetime import timedelta
-from .models import UserProfile
-from .forms import UserProfileForm, CampaignForm
-from .models import UserProfile, Campaign, ActivityLog
+from .forms import UserProfileForm, CampaignForm, NewsForm
+from .models import UserProfile, Campaign, ActivityLog, News
 from django.db import transaction
 from app import forms
 from django.http import JsonResponse
@@ -195,9 +194,10 @@ def campaign_create_view(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = forms.CampaignForm()
-
     return render(request, 'campaign_create.html', {'form': form})
+
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def active_campaigns_view(request):
     now = timezone.now()
     permanent_campaigns = Campaign.objects.filter(permanent=True)
@@ -400,5 +400,66 @@ def campaign_activity_view(request):
     activities = ActivityLog.objects.filter(user=user).order_by('-timestamp')
     
     return render(request, 'activity.html', {'activities': activities, 'user_points': user_points})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def news_create_view(request):
+    if request.method == 'POST':
+        form = forms.NewsForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    news = form.save(commit=False)
+                    news.save()
+                messages.success(request, "News created successfully!")
+                return redirect('active_news')
+            except Exception as e:
+                # Log the exception (optional)
+                print(f"Error occurred while creating news: {e}")
+                messages.error(request, "An error occurred while saving the news. Please try again.")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = forms.NewsForm()
+    return render(request, 'news_create.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def active_news_view(request):
+    now = timezone.now()
+
+    active_news = News.objects.filter(
+        start_time__lte=now,
+        end_time__gt=now
+    )
+    inactive_news = News.objects.exclude(
+        pk__in=active_news.values_list('pk', flat=True)
+    )
+
+    return render(request, 'active_news.html', {
+        'active_news': active_news,
+        'inactive_news': inactive_news,
+        'now': now
+    })
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def edit_news_view(request, pk):
+    news = get_object_or_404(news, pk=pk)
+    if request.method == 'POST':
+        if 'delete_news' in request.POST:
+            news.delete()
+            messages.success(request, "News deleted successfully!")
+            return redirect('news_campaigns')
+        form = NewsForm(request.POST, request.FILES, instance=news)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "News updated successfully!")
+            return redirect('active_news')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = NewsForm(instance=news)
+    return render(request, 'edit_news.html', {'form': form, 'news': news})
     
     

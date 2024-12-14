@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from allauth.account.forms import SignupForm
-from .models import UserProfile, Campaign, Reward
+from .models import UserProfile, Campaign, Reward, News
 from django.contrib.auth.models import User
 
 class UserProfileForm(forms.ModelForm):
@@ -58,3 +58,33 @@ class RewardForm(forms.ModelForm):
     class Meta:
         model = Reward
         fields = ['name', 'description', 'points_required', 'image']
+
+class NewsForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ['title', 'description', 'image']
+        widgets = {
+            'start_time': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control',
+                'required': True #The error changed once I added this
+            }),
+            'end_time': forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'form-control',
+                'required': True
+            })
+        }
+    def clean(self):
+        cleaned_data = super().clean()
+        start_time = cleaned_data.get('start_time')
+        end_time = cleaned_data.get('end_time')
+
+        if not start_time or not end_time:
+            raise forms.ValidationError("Start time and end time are required.")
+        
+        if start_time > end_time:
+            raise forms.ValidationError("Start time cannot be after end time.")
+        
+        return cleaned_data
+

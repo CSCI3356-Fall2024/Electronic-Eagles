@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    {% if request.user.is_superuser %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{% url 'news_create' %}" class="btn btn-primary">Create News Article</a>
+        </div>
+        
+        <!-- Active News Section -->
+        <h2 class="text-center">Active News Articles</h2>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for news in active_news %}
+                    <tr>
+                        <td>{{ news.title }}</td>
+                        <td>{{ news.start_time }}</td>
+                        <td>{{ news.end_time }}</td>
+                        <td class="text-center">
+                            {% if news.image %}
+                                <img src="{{ news.image.url }}" alt="News Image" style="width: 100px; height: 100px;">
+                            {% else %}
+                                <img src="{% static 'default_news.png' %}" alt="Default Image" style="width: 100px; height: 100px;">
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'edit_news' news.pk %}" class="btn btn-primary">Edit</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No active news articles found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+        
+        <!-- Inactive News Section -->
+        <h2 class="text-center">Inactive News Articles</h2>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for news in inactive_news %}
+                    <tr>
+                        <td>{{ news.title }}</td>
+                        <td>{{ news.start_time }}</td>
+                        <td>{{ news.end_time }}</td>
+                        <td class="text-center">
+                            {% if news.image %}
+                                <img src="{{ news.image.url }}" alt="News Image" style="width: 100px; height: 100px;">
+                            {% else %}
+                                <img src="{% static 'logo.png' %}" alt="Default Image" style="width: 100px; height: 100px;">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if news.start_time > now %}
+                                <a href="{% url 'edit_news' news.pk %}" class="btn btn-primary">Edit</a>
+                            {% else %}
+                                <a href="{% url 'view_news_details' news.pk %}" class="btn btn-info">View</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No inactive news articles found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <h3>If you are not an Admin this page is not for you.</h3>
+    {% endif %}
+{% endblock %}

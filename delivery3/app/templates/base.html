@@ -55,8 +55,21 @@
                     <a class="nav-link" href="{% url 'activity' %}">Activity</a>
                 </li>
                 {% if user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'active_campaigns' %}">Campaigns</a>
+                    <li class="nav-item dropdown">
+                        <a 
+                            class="nav-link dropdown-toggle" 
+                            href="#" 
+                            id="manageDropdown" 
+                            role="button" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false"
+                        >
+                            Manage
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="manageDropdown">
+                            <li><a class="dropdown-item" href="{% url 'active_campaigns' %}">Campaigns</a></li>
+                            <li><a class="dropdown-item" href="{% url 'active_news' %}">News</a></li>
+                        </ul>
                     </li>
                 {% endif %}
             </ul>

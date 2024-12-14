@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Create News Article
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="admin-banner">
+                        <span>News Management</span>
+                        <span class="admin-tag">ADMIN</span>
+                    </div>
+                    <h2 class="text-center mb-4">Create News Article</h2>
+                    <p class="text-center form-required-notice">All fields are required</p>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><label for="news-title">News Title <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="text" id="news-title" name="title" class="form-control" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="news-description">Description <span class="required-asterisk">*</span></label></th>
+                                    <td><textarea id="news-description" name="description" class="form-control" rows="3" required></textarea></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="start-time">Start Date & Time <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="datetime-local" id="start-time" name="start_time" class="form-control" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="end-time">End Date & Time <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="datetime-local" id="end-time" name="end_time" class="form-control" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="news-image">Image</label></th>
+                                    <td>
+                                        <input type="file" id="news-image" name="image" class="form-control" accept="image/*">
+                                        <small class="form-text text-muted">
+                                            If no image is uploaded, a default image will be used.
+                                        </small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mt-3">Create News Article</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="admin-footer text-center mt-4">
+    This page is restricted to administrative users only. If you believe you've reached this page in error, please contact IT support.
+</div>
+
+<style>
+    .required-asterisk {
+        color: red;
+        margin-left: 3px;
+    }
+
+    .admin-banner {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    .admin-tag {
+        background-color: #dc3545;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8em;
+    }
+</style>
+{% endblock %}

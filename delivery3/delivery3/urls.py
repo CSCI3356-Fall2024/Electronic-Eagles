@@ -32,9 +32,11 @@ urlpatterns = [
     path('campaign/create/', views.campaign_create_view, name='campaign_create'),
     path('campaign', views.active_campaigns_view, name='active_campaigns'),
     path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
-    path('campaigns/edit/<int:pk>/', views.edit_campaign_view, name='edit_campaign'),
     path('change_admin_status/', views.change_admin_status, name='change_admin_status'),
     path('campaign/<int:pk>/view/', views.view_campaign_details, name='view_campaign_details'),
+    path('news', views.active_news_view, name='active_news'),
+    path('news/create/', views.news_create_view, name='news_create'),
+    path('news/edit/<int:pk>/', views.edit_news_view, name='edit_news'),
     path('rewards/', views.rewards_view, name='rewards'),
     path('validate-campaign/<uuid:campaign_id>/', views.validate_campaign, name='validate_campaign'),
 

@@ -109,3 +109,18 @@ class Reward(models.Model):
 
     def __str__(self):
         return self.name
+
+class News(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    image = models.ImageField(upload_to='news/', blank=True, null=True)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    def __str__(self):
+        return self.title
+
+    def clean(self):
+        super().clean()
+        if self.start_time > self.end_time:
+            raise ValidationError("Start date cannot be after end date.")

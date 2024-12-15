@@ -62,7 +62,7 @@ class RewardForm(forms.ModelForm):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = News
-        fields = ['title', 'description', 'image', 'start_time', 'end_time']
+        fields = ['title', 'author', 'description', 'image', 'start_time', 'end_time']
         widgets = {
             'start_time': forms.DateTimeInput(attrs={
                 'type': 'datetime-local',

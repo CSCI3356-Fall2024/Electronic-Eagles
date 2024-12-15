@@ -26,6 +26,10 @@
                                     <td><input type="text" id="news-title" name="title" class="form-control" value="{{ form.title.value }}" required></td>
                                 </tr>
                                 <tr>
+                                    <th><label for="news-author">Author <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="text" id="news-author" name="author" class="form-control" value="{{ form.author.value }}" required></td>
+                                </tr>
+                                <tr>
                                     <th><label for="start-time">Start Date & Time <span class="required-asterisk">*</span></label></th>
                                     <td><input type="datetime-local" id="start-time" name="start_time" class="form-control" value="{{ form.start_time.value|date:'Y-m-d\TH:i' }}" required></td>
                                 </tr>

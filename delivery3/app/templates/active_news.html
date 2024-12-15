@@ -13,6 +13,7 @@
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Author</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Actions</th>
@@ -22,6 +23,7 @@
                 {% for news in active_news %}
                     <tr>
                         <td>{{ news.title }}</td>
+                        <td>{{ news.author }}</td>
                         <td>{{ news.start_time }}</td>
                         <td>{{ news.end_time }}</td>
                         <td>
@@ -44,6 +46,7 @@
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Author</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Actions</th>
@@ -53,6 +56,7 @@
                 {% for news in inactive_news %}
                     <tr>
                         <td>{{ news.title }}</td>
+                        <td>{{ news.author }}</td>
                         <td>{{ news.start_time }}</td>
                         <td>{{ news.end_time }}</td>
                         <td>

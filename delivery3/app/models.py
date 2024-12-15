@@ -112,6 +112,7 @@ class Reward(models.Model):
 
 class News(models.Model):
     title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
     description = models.TextField()
     image = models.ImageField(upload_to='news/', blank=True, null=True)
     start_time = models.DateTimeField()

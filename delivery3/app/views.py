@@ -507,12 +507,12 @@ def active_news_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def edit_news_view(request, pk):
-    news = get_object_or_404(news, pk=pk)
+    news = get_object_or_404(News, pk=pk)
     if request.method == 'POST':
         if 'delete_news' in request.POST:
             news.delete()
             messages.success(request, "News deleted successfully!")
-            return redirect('news_campaigns')
+            return redirect('active_news')
         form = NewsForm(request.POST, request.FILES, instance=news)
         if form.is_valid():
             form.save()

@@ -108,7 +108,7 @@ class Reward(models.Model):
     image = models.ImageField(upload_to='rewards/', blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} (Points needed: {self.points_required})" 
 
 class News(models.Model):
     title = models.CharField(max_length=200)

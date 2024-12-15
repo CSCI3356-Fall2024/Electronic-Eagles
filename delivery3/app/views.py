@@ -15,6 +15,8 @@ from django.views.decorators.http import require_http_methods
 from django.core.mail import send_mail
 from django.utils.timezone import now
 from allauth.account.models import EmailAddress
+from .forms import RewardForm
+from .models import Reward
 
 @login_required
 @require_http_methods(["POST"])
@@ -75,6 +77,7 @@ def validate_campaign(request, campaign_id):
 
 def landing_page(request):
     now = timezone.now()
+    news_campaigns = Campaign.objects.none()
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         news_campaigns = Campaign.objects.filter(
@@ -316,6 +319,10 @@ def view_campaign_details(request, pk):
 @login_required
 def rewards_view(request):
     user_profile = request.user.userprofile
+    user = request.user
+    rewards = Reward.objects.all()
+    if request.user.is_superuser:
+        form = RewardForm(request.POST or None, request.FILES or None)
     rewardResponse = ""
 
     if request.method == 'POST':
@@ -339,6 +346,51 @@ def rewards_view(request):
                 else:
                     messages.error(request, "You have already redeemed this campaign.")
                 return redirect('actions')
+
+        elif 'reward_id' in request.POST:
+            reward_id = request.POST.get('reward_id')
+            reward = get_object_or_404(Reward, id=reward_id)
+            if user_profile.points >= reward.points_required:
+                user_profile.points -= reward.points_required
+                user_profile.save()
+                messages.success(request, f"You have successfully redeemed {reward.name} for {reward.points_required} points.")
+                
+                ActivityLog.objects.create(
+                    user=request.user,
+                    activity_type='REDEEMED',
+                    points=-reward.points_required,
+                    description=f"Redeemed {reward.points_required} points for reward: {reward.name}"
+                )
+
+                rewardResponse = f'You have succesfully redeemed {reward.name} for {reward.points_required} points! Check email for more details.'
+                try:
+                    user = request.user
+                    email_address = EmailAddress.objects.filter(user=user, primary=True).first()
+                    send_mail(
+                        'Redeemed Reward!',
+                        f'You have successfully redeemed {reward.name} for {reward.points_required} points! '
+                        'Thank you for keeping the environment clean. Your efforts are not going unnoticed. '
+                        'The dev team here at Eco Edu hopes you enjoy your reward.',
+                        'blest@bc.edu',
+                        [email_address.email],
+                        fail_silently=False,
+                    )
+                    messages.success(request, "Points successfully redeemed and email sent!")
+
+                except Exception as e:
+                    messages.error(request, f"Points redeemed but failed to send email: {str(e)}")
+
+            else:
+                messages.error(request, f"Not enough points to redeem {reward.name}. You need {reward.points_required - user_profile.points} more points.")
+
+            return redirect ('rewards')
+
+        elif 'delete_reward_id' in request.POST:
+            reward_id = request.POST['delete_reward_id']
+            reward = get_object_or_404(Reward, id=reward_id)
+            reward.delete()
+            messages.success(request, "Reward successfully deleted.")
+            return redirect('rewards')
 
         elif 'points_to_subtract' in request.POST and 'item_name' in request.POST:
             points_to_subtract = int(request.POST.get('points_to_subtract', 0))
@@ -374,12 +426,22 @@ def rewards_view(request):
                     messages.error(request, f"Points redeemed but failed to send email: {str(e)}")
 
             return redirect('rewards')
+
+        elif request.user.is_superuser and 'name' in request.POST:
+            form = RewardForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Reward added successfully!")
+                return redirect ('rewards')
+            else:
+                messages.error(request, "Failed to add reward. Please check the form and try again.")
+
         else:
             messages.error(request, "No item name or point total.")
 
-            
-    
-    return render(request, 'rewards.html', {'points': user_profile.points, 'rewardResponse': rewardResponse})
+    context = {'points': user_profile.points, 'rewards': Reward.objects.all(), 'rewardResponse': rewardResponse, 'form' : form if request.user.is_superuser else None}
+    return render(request, 'rewards.html', context)
+
 
 @login_required
 def activity_view(request):

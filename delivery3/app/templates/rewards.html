@@ -11,7 +11,8 @@
 
     .flex {
         display: flex;
-        justify-content: center;
+        flex-wrap: wrap;
+        justify-content: space-around;
         align-items: center;
     }
     .wrapper {
@@ -37,27 +38,6 @@
         height: 100%;
         word-wrap: break-word;
         overflow-wrap: break-word;
-    }
-
-    .wrapper .container .top1 {
-        width: 100%;
-        height: 80%;
-        background: url("{% static 'money.jpg' %}") no-repeat center center;
-        background-size: 100%;
-    }
-
-    .wrapper .container .top2 {
-        width: 100%;
-        height: 80%;
-        background: url("{% static 'giftCard.jpg' %}") no-repeat center center;
-        background-size: 100%;
-    }
-
-    .wrapper .container .top3 {
-        width: 100%;
-        height: 80%;
-        background: url("{% static 'luckyTicket.jpg' %}") no-repeat center center;
-        background-size: 100%;
     }
 
     .wrapper .container .bottom {
@@ -232,8 +212,26 @@
         font-size: 13px;
     }
 
+    .admin-form {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
 
-    
+    .reward-image {
+    width: 100%;
+    display: block;
+    }
+
+    .reward-image.superuser {
+        height: 70%; /* Height for superusers */
+    }
+
+    .reward-image.regular {
+        height: 80%; /* Height for regular users */
+    }
+
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -255,124 +253,72 @@ $(document).on('click', '.remove', function() {
         <p>Keep completing campaigns to earn more rewards!</p>
         <p>{{ rewardResponse }}</p>
     </div>
-    <div class="flex">
-    <div class="wrapper">
-        <div class="container">
-          <div class="top1"></div>
-          <div class="bottom">
-            <div class="left">
-              <div class="details">
-                <h1>Eagle Bucks $15</h1>
-                <p>2,500 Points</p>
-              </div>
-              <div class="buy"><i class="material-icons">Redeem</i></div>
-            </div>
-            <div class="right">
-              <form action="{% url 'rewards' %}" method="POST">
+
+    {% if request.user.is_superuser %}
+        <div class="admin-form">
+            <h3>Manage Rewards</h3>
+            <form method="post" action="{% url 'rewards' %}" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input type="hidden" name="points_to_subtract" value="2500">
-                <input type="hidden" name="item_name" value="$15 Eagles Bucks">
-                <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
+                <p>{{ form.name.label_tag }} {{ form.name }}</p>
+                <p>{{ form.description.label_tag }} {{ form.description }}</p>
+                <p>{{ form.points_required.label_tag }} {{ form.points_required }}</p>
+                <p>{{ form.image.label_tag }} {{ form.image }}</p>
+                <button type="submit">Add Reward</button>
             </form>
-              <div class="details">
-                <p>Are you sure you want to reddem 2,500 points for $15 Eagle Bucks?</p>
-              </div>
-              <div class="remove"><i class="material-icons">Cancel</i></div>
-            </div>
-          </div>
         </div>
-        <div class="inside">
-          <div class="icon"><i class="material-icons">Details</i></div>
-          <div class="contents">
-            <table>
-              <tr>
-                <th>Product Description</th>
-              </tr>
-              <tr>
-                <td>$15 in Eagle Bucks</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="wrapper">
-        <div class="container">
-          <div class="top2"></div>
-          <div class="bottom">
-            <div class="left">
-              <div class="details">
-                <h1>School Store Gift Card $15</h1>
-                <p>2,500 Points</p>
-              </div>
-            <div class="buy"><i class="material-icons">Redeem</i></div>
-            </div>
-            <div class="right">
-                <form action="{% url 'rewards' %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="points_to_subtract" value="2500">
-                    <input type="hidden" name="item_name" value="$15 School Store Gift Card">
-                    <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
+    {% endif %}
+
+    <h4>Available Rewards</h4>
+    <div class="flex">
+        {% for reward in rewards %}
+        <div class="wrapper">
+            <div class="container">
+              {% load static %}
+              <img class="reward-image {% if request.user.is_superuser %}superuser{% else %}regular{% endif %}" src="{% if reward.image %}{{ reward.image.url }}{% else %}{% static 'EveryBiteCounts.jpg' %}{% endif %}" alt="{{ reward.name }}">
+              {% if request.user.is_superuser %}
+                <form action="{% url 'rewards' %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="delete_reward_id" value="{{ reward.id }}">
+                  <button type="submit" class="delete-btn" style="background-color: #BC3B59; color: white; border: none; padding: 10px 20px; margin-top: 5px;">Delete Reward</button>
                 </form>
-              <div class="details">
-                <p>Are you sure you want to redeem 2,500 points for a $15 School Store Gift Card?</p>
-              </div>
-              <div class="remove"><i class="material-icons">Cancel</i></div>
-            </div>
-          </div>
-        </div>
-        <div class="inside">
-          <div class="icon"><i class="material-icons">Details</i></div>
-          <div class="contents">
-            <table>
-              <tr>
-                <th>Product Description</th>
-              </tr>
-              <tr>
-                <td>$15 School Store Gift Card</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="wrapper">
-        <div class="container">
-          <div class="top3"></div>
-          <div class="bottom">
-            <div class="left">
-              <div class="details">
-                <h1>Speciality Game Ticket - BU vs BC Hockey</h1>
-                <p>25,000 Points</p>
-              </div>
-              <div class="buy"><i class="material-icons">Redeem</i></div>
-            </div>
-            <div class="right">
-                <form action="{% url 'rewards' %}" method="POST">
+              {% endif %}
+              <div class="bottom">
+                <div class="left">
+                  <div class="details">
+                    <h1>{{ reward.name }}</h1>
+                    <p>{{ reward.points_required }} Points</p>
+                  </div>
+                  <div class="buy"><i class="material-icons">Redeem</i></div>
+                </div>
+                <div class="right">
+                  <form action="{% url 'rewards' %}" method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="points_to_subtract" value="25000">
-                    <input type="hidden" name="item_name" value="Speciality Game Ticket - BU vs BC Hockey">
+                    <input type="hidden" name="reward_id" value="{{ reward.id }}">
                     <button type="submit"><div class="done"><i class="material-icons">Yes</i></div></button>
-                </form>
-              <div class="details">
-                <p>Are you sure you want to redeem 25,000 points for a BC vs BU hockey ticket?</p>
+                  </form>
+                  <div class="details">
+                    <p>Are you sure you want to redeem {{ reward.points_required }} points for {{ reward.name }}?</p>
+                  </div>
+                  <div class="remove"><i class="material-icons">Cancel</i></div>
+                </div>
               </div>
-              <div class="remove"><i class="material-icons">Cancel</i></div>
+            </div>
+            <div class="inside">
+              <div class="icon"><i class="material-icons">Details</i></div>
+              <div class="contents">
+                <table>
+                  <tr>
+                    <th>Product Description</th>
+                  </tr>
+                  <tr>
+                    <td>{{ reward.description }}</td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="inside">
-          <div class="icon"><i class="material-icons">Details</i></div>
-          <div class="contents">
-            <table>
-              <tr>
-                <th>Product Description</th>
-              </tr>
-              <tr>
-                <td>Ticket to BC vs BU Hockey Game</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </div>
+        {% endfor %}
+
     </div>
     </body>
 {% endblock %}

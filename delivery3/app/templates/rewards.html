@@ -89,6 +89,7 @@
     }
 
     .wrapper .container .bottom .left .buy:hover {
+        cursor: pointer;
         background: #A6CDDE;
     }
 
@@ -279,7 +280,7 @@
     .admin-form button:hover {
         background-color: #0056b3;
     }
-
+    
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -289,6 +290,20 @@ $(document).on('click', '.buy', function() {
 
 $(document).on('click', '.remove', function() {
     $(this).closest('.container').find('.bottom').removeClass('clicked');
+});
+
+// Confirmation for delete reward
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (event) {
+            const confirmed = confirm("Are you sure you want to delete this reward?");
+            if (!confirmed) {
+                event.preventDefault(); 
+            }
+        });
+    });
 });
 
 </script>

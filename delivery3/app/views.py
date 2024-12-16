@@ -77,18 +77,25 @@ def validate_campaign(request, campaign_id):
 
 def landing_page(request):
     now = timezone.now()
-    news_campaigns = Campaign.objects.none()
+    featured_campaigns = Campaign.objects.none()
+    news = News.objects.none()
+    news
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
-        news_campaigns = Campaign.objects.filter(
+        featured_campaigns = Campaign.objects.filter(
             newsfeed=True, 
+            start_time__lte=now,
+            end_time__gt=now
+        ).order_by('-start_time')
+        news = News.objects.filter(
             start_time__lte=now,
             end_time__gt=now
         ).order_by('-start_time')
         if not profile.is_complete:
             return redirect('profile_setup')
     return render(request, 'landing_page.html', {
-        'news_campaigns' : news_campaigns,
+        'featured_campaigns' : featured_campaigns,
+        'news' : news,
     })
 
 
@@ -507,18 +514,19 @@ def active_news_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def edit_news_view(request, pk):
-    news = get_object_or_404(news, pk=pk)
+    news = get_object_or_404(News, pk=pk)
     if request.method == 'POST':
         if 'delete_news' in request.POST:
             news.delete()
             messages.success(request, "News deleted successfully!")
-            return redirect('news_campaigns')
+            return redirect('active_news')
         form = NewsForm(request.POST, request.FILES, instance=news)
         if form.is_valid():
             form.save()
             messages.success(request, "News updated successfully!")
             return redirect('active_news')
         else:
+            print(form.errors)
             messages.error(request, "Please correct the errors below.")
     else:
         form = NewsForm(instance=news)

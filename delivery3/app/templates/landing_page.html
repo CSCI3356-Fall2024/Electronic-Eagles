@@ -41,16 +41,16 @@
             </div>
         </div>
 
-        <!-- News Section -->
+        <!-- Featured Campaigns -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h5 class="card-title text-center">Featured Campaigns</h5>
                     <div class="news-feed-container">
-                        {% if news_campaigns %}
+                        {% if featured_campaigns %}
                         <div class="d-flex justify-content-center">
                             <div class="container py-3" style="max-height: 500px; overflow-y: auto;">
-                                {% for campaign in news_campaigns %}
+                                {% for campaign in featured_campaigns %}
                                 <div class="card shadow-sm mb-3">
                                     {% if campaign.cover_photo %}
                                         <img src="{{ campaign.cover_photo.url }}" class="card-img-top" alt="{{ campaign.name }}" style="height: 160px; object-fit: cover;">
@@ -87,8 +87,49 @@
                 </div>
             </div>
         </div>
+    <!-- Sustainability News Feed -->
+    <div class="container-fluid mt-4 px-0">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">Sustainability News Feed</h5>
+                <div class="container" style="max-height: 500px; overflow-y: auto;">
+                    {% if news %}
+                        {% for article in news %}
+                        <div class="row mb-4 align-items-center px-4">
+                            <!-- Left Column: Image, Title, Date, Author -->
+                            <div class="col-md-4 text-center">
+                                {% if article.image %}
+                                    <img src="{{ article.image.url }}" class="img-fluid mb-3" alt="{{ article.title }}" style="height: 300px; object-fit: cover; border-radius: 5px;">
+                                {% else %}
+                                    <img src="{% static 'logo.png' %}" class="img-fluid mb-3" alt="Default Image" style="height: 200px; object-fit: cover; border-radius: 5px;">
+                                {% endif %}
+                                <h5 class="fw-bold">{{ article.title }}</h5>
+                                <div class="text-muted small">
+                                    <p class="mb-1"><strong>Published:</strong> {{ article.start_time|date:"M d, Y h:i A" }}</p>
+                                    <p><strong>Author:</strong> {{ article.author }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Description -->
+                            <div class="col-md-8">
+                                <p class="text-justify" style="line-height: 1.8; font-size: 1.1rem;">
+                                    {{ article.description }}
+                                </p>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            No news articles are currently available.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 {% else %}
 <style>
     .card {

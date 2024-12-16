@@ -112,6 +112,7 @@ class Reward(models.Model):
 
 class News(models.Model):
     title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
     description = models.TextField()
     image = models.ImageField(upload_to='news/', blank=True, null=True)
     start_time = models.DateTimeField()
@@ -122,5 +123,18 @@ class News(models.Model):
 
     def clean(self):
         super().clean()
-        if self.start_time > self.end_time:
-            raise ValidationError("Start date cannot be after end date.")
+        start_time = self.start_time
+        end_time = self.end_time
+        if start_time and end_time:
+            if self.start_time > self.end_time:
+                raise ValidationError("Start date cannot be after end date.")
+        else:
+            raise ValidationError("Start time and end time are required.")
+
+
+    #def save(self, *args, **kwargs):
+    #    self.full_clean()  # Ensures clean() runs before saving
+    #    super().save(*args, **kwargs)
+
+
+

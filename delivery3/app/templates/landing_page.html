@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <!-- News Section -->
+        <!-- Featured Campaigns -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-body">
@@ -88,40 +88,41 @@
             </div>
         </div>
     <!-- Sustainability News Feed -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title text-center mb-4">Sustainability News Feed</h5>
+    <div class="container-fluid mt-4 px-0">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">Sustainability News Feed</h5>
+                <div class="container" style="max-height: 500px; overflow-y: auto;">
                     {% if news %}
-                    <div class="row">
                         {% for article in news %}
-                        <div class="col-md-4 d-flex align-items-center">
-                            <!-- Left Column: Image and Title -->
-                            <div class="text-center">
-                                <h6 class="fw-bold">{{ article.title }}</h6>
+                        <div class="row mb-4 align-items-center px-4">
+                            <!-- Left Column: Image, Title, Date, Author -->
+                            <div class="col-md-4 text-center">
                                 {% if article.image %}
-                                    <img src="{{ article.image.url }}" class="img-fluid mb-3" alt="{{ article.title }}" style="max-height: 150px; object-fit: cover;">
+                                    <img src="{{ article.image.url }}" class="img-fluid mb-3" alt="{{ article.title }}" style="height: 300px; object-fit: cover; border-radius: 5px;">
                                 {% else %}
-                                    <img src="{% static 'logo.png' %}" class="img-fluid mb-3" alt="Default Image" style="max-height: 150px; object-fit: cover;">
+                                    <img src="{% static 'logo.png' %}" class="img-fluid mb-3" alt="Default Image" style="height: 200px; object-fit: cover; border-radius: 5px;">
                                 {% endif %}
-                                <div class="text-muted small mb-2">
-                                    <div> {{ article.start_time|date:"M d, Y h:i A" }}</div>
-                                    <div><strong>Author:</strong> {{ article.author }}</div>
+                                <h5 class="fw-bold">{{ article.title }}</h5>
+                                <div class="text-muted small">
+                                    <p class="mb-1"><strong>Published:</strong> {{ article.start_time|date:"M d, Y h:i A" }}</p>
+                                    <p><strong>Author:</strong> {{ article.author }}</p>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Right Column: Description -->
-                        <div class="col-md-8">
 
+                            <!-- Right Column: Description -->
+                            <div class="col-md-8">
+                                <p class="text-justify" style="line-height: 1.8; font-size: 1.1rem;">
+                                    {{ article.description }}
+                                </p>
+                            </div>
                         </div>
                         <hr class="my-4">
                         {% endfor %}
-                    </div>
                     {% else %}
-                    <div class="alert alert-info text-center">
-                        No news articles are currently available.
-                    </div>
+                        <div class="alert alert-info text-center">
+                            No news articles are currently available.
+                        </div>
                     {% endif %}
                 </div>
             </div>

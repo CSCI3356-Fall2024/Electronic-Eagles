@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Reward Management
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <h2 class="mb-4">Reward Management</h2>
+                    <p>Manage rewards and enhance the user experience by adding new rewards.</p>
+                    <a href="{% url 'add_reward_form' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle"></i> Add Reward
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

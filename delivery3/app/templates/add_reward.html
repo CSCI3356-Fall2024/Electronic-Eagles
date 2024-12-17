@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Add New Reward
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="admin-banner">
+                        <span>Reward Management</span>
+                        <span class="admin-tag">ADMIN</span>
+                    </div>
+                    <h2 class="text-center mb-4">Add New Reward</h2>
+                    <p class="text-center form-required-notice">All fields are required</p>
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th><label for="reward-name">Reward Name <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="text" id="reward-name" name="name" class="form-control" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="description">Reward Description <span class="required-asterisk">*</span></label></th>
+                                    <td><textarea id="description" name="description" class="form-control" rows="3" required></textarea></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="points-required">Points Required <span class="required-asterisk">*</span></label></th>
+                                    <td><input type="number" id="points-required" name="points_required" class="form-control" min="0" required></td>
+                                </tr>
+                                <tr>
+                                    <th><label for="reward-image">Reward Image</label></th>
+                                    <td>
+                                        <input type="file" id="reward-image" name="image" class="form-control" accept="image/*">
+                                        <small class="form-text text-muted">
+                                            If no image is uploaded, a default reward image will be used.
+                                        </small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mt-3">Add Reward</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="admin-footer text-center mt-4">
+    This page is restricted to administrative users only. If you believe you've reached this page in error, please contact IT support.
+</div>
+{% endblock %}

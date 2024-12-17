@@ -216,7 +216,7 @@ def active_campaigns_view(request):
         permanent=False,
         start_time__lte=now,
         end_time__gt=now
-    )
+    ).prefetch_related('redeemed_users')
     inactive_campaigns = Campaign.objects.filter(permanent=False).exclude(
         pk__in=active_campaigns.values_list('pk', flat=True)
     )

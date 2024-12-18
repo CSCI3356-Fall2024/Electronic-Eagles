@@ -134,28 +134,30 @@ STATICFILES_DIRS = [
 
 # Google Cloud Storage Configuration
 try:
+    # Get credentials from environment
     GOOGLE_CREDS_JSON = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
     if not GOOGLE_CREDS_JSON:
-        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is missing")
-    
-    # Parse the JSON string and create credentials
-    credentials_dict = json.loads(GOOGLE_CREDS_JSON)
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credentials_dict)
-    
-    # Storage configuration
+        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS not set")
+
+    # Parse credentials
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+        json.loads(GOOGLE_CREDS_JSON)
+    )
+
+    # Basic GCS settings
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    GS_BUCKET_NAME = "electronic-eagles"
+    GS_BUCKET_NAME = 'electronic-eagles'
     MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-    
-    # Optional: Configure additional GCS settings
-    GS_FILE_OVERWRITE = False
-    GS_DEFAULT_ACL = 'publicRead'
-    GS_MAX_MEMORY_SIZE = 5242880  # 5 MB
-    
-    # Log successful configuration
-    logger = logging.getLogger(__name__)
-    logger.info(f"GCS configured successfully with bucket: {GS_BUCKET_NAME}")
-    logger.debug(f"Storage backend: {DEFAULT_FILE_STORAGE}")
+
+except Exception as e:
+    print(f"Failed to configure GCS: {e}")
+    # In production, we want to fail loudly
+    if not DEBUG:
+        raise
+    # In development, fall back to local storage
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
     
 except Exception as e:
     logger = logging.getLogger(__name__)

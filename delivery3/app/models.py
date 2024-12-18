@@ -8,6 +8,7 @@ from django.core.files import File
 import uuid
 from django.utils import timezone
 import logging
+from django.core.files.storage import default_storage
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -60,6 +61,11 @@ class Campaign(models.Model):
 
     def save(self, *args, **kwargs):
         logger = logging.getLogger(__name__)
+        if self.cover_photo:
+            logger.debug(f"Cover photo: {self.cover_photo.name} (field type: {type(self.cover_photo)})")
+            logger.debug(f"Storage backend: {default_storage.__class__.__name__}")
+        else:
+            logger.debug("No cover photo provided.")
         if not self.qr_code:
             try:
                 qr = qrcode.QRCode(

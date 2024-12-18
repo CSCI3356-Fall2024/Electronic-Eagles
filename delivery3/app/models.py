@@ -7,6 +7,7 @@ from io import BytesIO
 from django.core.files import File
 import uuid
 from django.utils import timezone
+import logging
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -58,25 +59,28 @@ class Campaign(models.Model):
                 raise ValidationError("Permanent campaigns cannot have start or end times.")
 
     def save(self, *args, **kwargs):
-        # Generate QR code if it doesn't exist
+        logger = logging.getLogger(__name__)
         if not self.qr_code:
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(f'campaign:{self.unique_id}')
-            qr.make(fit=True)
-            qr_image = qr.make_image(fill_color="black", back_color="white")
-            
-            # Save QR code image
-            buffer = BytesIO()
-            qr_image.save(buffer, format='PNG')
-            filename = f'qr_code-{self.unique_id}.png'
-            self.qr_code.save(filename, File(buffer), save=False)
-        
+            try:
+                qr = qrcode.QRCode(
+                    version=1,
+                    error_correction=qrcode.constants.ERROR_CORRECT_L,
+                    box_size=10,
+                    border=4,
+                )
+                qr.add_data(f'campaign:{self.unique_id}')
+                qr.make(fit=True)
+                qr_image = qr.make_image(fill_color="black", back_color="white")
+                
+                buffer = BytesIO()
+                qr_image.save(buffer, format='PNG')
+                filename = f'qr_code-{self.unique_id}.png'
+                self.qr_code.save(filename, File(buffer), save=False)
+                logger.info(f"QR code generated and saved for campaign: {self.name}")
+            except Exception as e:
+                logger.error(f"Error generating QR code: {e}", exc_info=True)
         super().save(*args, **kwargs)
+
 
     @property
     def is_past_campaign(self):

@@ -134,9 +134,17 @@ USE_TZ = False
 
 
 # Google Cloud Storage
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.getenv("GOOGLE_APPLICATION_CREDENTIALS")  # Path to your JSON key file
-)
+# Read the environment variable containing the JSON string
+import json
+service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+if service_account_json:
+    # Convert the JSON string into a dictionary
+    service_account_info = json.loads(service_account_json)
+    # Create credentials from the JSON data
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
+else:
+    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set or invalid.")
 GS_BUCKET_NAME = "electronic-eagles"
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
@@ -154,8 +162,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+if DEBUG:
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    MEDIA_URL = "/media/"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -220,4 +231,15 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'DEBUG',  # Log all details
     },
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mysite_4vqu',  
+        'USER': 'mysite',  
+        'PASSWORD': 'b3Ef7xI6WAtgNSqX0CIiAVxQTjF7bNaa',  # Replace with your password
+        'HOST': 'dpg-cth50hl2ng1s739kdsmg-a.oregon-postgres.render.com',  # Replace with your host
+        'PORT': '5432',  # Default PostgreSQL port
+    }
 }

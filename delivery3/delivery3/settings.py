@@ -92,12 +92,12 @@ WSGI_APPLICATION = 'delivery3.wsgi.application'
 import dj_database_url
 import os
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:project_password@localhost:5432/electronic_eagles',
-        conn_max_age=600
-    )
-}
+#DATABASES = {
+#    'default': dj_database_url.config(
+#        default='postgresql://postgres:project_password@localhost:5432/electronic_eagles',
+#        conn_max_age=600
+#    )
+#}
 
 
 # Password validation
@@ -147,9 +147,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-GS_BUCKET_NAME = "electronic-eagles"
-
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+GS_BUCKET_NAME = "electronic-eagles"
 
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 

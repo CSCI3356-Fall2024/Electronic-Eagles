@@ -133,43 +133,33 @@ STATICFILES_DIRS = [
 ]
 
 # Google Cloud Storage Configuration
-try:
-    # Get credentials from environment
-    GOOGLE_CREDS_JSON = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-    if not GOOGLE_CREDS_JSON:
-        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS not set")
+# GCS Credentials
+from storages.backends.gcloud import GoogleCloudStorage
+GOOGLE_CREDS_JSON = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+credentials_dict = json.loads(GOOGLE_CREDS_JSON)
+GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credentials_dict)
 
-    # Parse credentials
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
-        json.loads(GOOGLE_CREDS_JSON)
-    )
+# Create storage instance
+GS_BUCKET_NAME = 'electronic-eagles'
+STORAGE_INSTANCE = GoogleCloudStorage(
+    credentials=GS_CREDENTIALS,
+    bucket_name=GS_BUCKET_NAME
+)
 
-    # Basic GCS settings
-    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    GS_BUCKET_NAME = 'electronic-eagles'
-    MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+# Force Django to use our storage instance
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+STORAGES = {
+    'default': {
+        'BACKEND': 'storages.backends.gcloud.GoogleCloudStorage',
+        'OPTIONS': {
+            'credentials': GS_CREDENTIALS,
+            'bucket_name': GS_BUCKET_NAME,
+        },
+    },
+}
 
-except Exception as e:
-    print(f"Failed to configure GCS: {e}")
-    # In production, we want to fail loudly
-    if not DEBUG:
-        raise
-    # In development, fall back to local storage
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    
-except Exception as e:
-    logger = logging.getLogger(__name__)
-    logger.error(f"Failed to configure Google Cloud Storage: {str(e)}")
-    if DEBUG:
-        # Fallback to FileSystem storage in development
-        DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-        MEDIA_URL = '/media/'
-        MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    else:
-        # In production, raise the error
-        raise
+# Media settings
+MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

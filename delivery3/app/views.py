@@ -17,6 +17,8 @@ from django.utils.timezone import now
 from allauth.account.models import EmailAddress
 from .forms import RewardForm
 from .models import Reward
+from django.db.models import Q
+
 
 @login_required
 @require_http_methods(["POST"])
@@ -79,7 +81,8 @@ def landing_page(request):
     now = timezone.now()
     featured_campaigns = Campaign.objects.none()
     news = News.objects.none()
-    news
+    top_users = []  # Default value if no users exist
+
     if request.user.is_authenticated:
         profile, created = UserProfile.objects.get_or_create(user=request.user)
         featured_campaigns = Campaign.objects.filter(
@@ -91,13 +94,23 @@ def landing_page(request):
             start_time__lte=now,
             end_time__gt=now
         ).order_by('-start_time')
+
         if not profile.is_complete:
             return redirect('profile_setup')
-        
-        top_users = UserProfile.objects.order_by('-points')[:5]
+
+        # Handle the logic for top users
+        if UserProfile.objects.exists():  # Check if any users exist
+            # Check if users have points
+            if UserProfile.objects.filter(points__gt=0).exists():
+                # Rank users by descending points if points exist
+                top_users = UserProfile.objects.order_by('-points')[:5]
+            else:
+                # Otherwise, include all users
+                top_users = UserProfile.objects.all()[:5]
+
     return render(request, 'landing_page.html', {
-        'featured_campaigns' : featured_campaigns,
-        'news' : news,
+        'featured_campaigns': featured_campaigns,
+        'news': news,
         'top_users': top_users,
     })
 

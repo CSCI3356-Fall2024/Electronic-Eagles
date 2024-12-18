@@ -136,15 +136,23 @@ USE_TZ = False
 # Google Cloud Storage
 # Read the environment variable containing the JSON string
 import json
+import logging
+
+logger = logging.getLogger(__name__)
+
 service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
 if service_account_json:
-    # Convert the JSON string into a dictionary
-    service_account_info = json.loads(service_account_json)
-    # Create credentials from the JSON data
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
+    logger.debug(f"GOOGLE_APPLICATION_CREDENTIALS is set. Value (truncated): {service_account_json[:100]}")
+    try:
+        service_account_info = json.loads(service_account_json)
+        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
+    except json.JSONDecodeError:
+        raise ValueError("Invalid JSON in GOOGLE_APPLICATION_CREDENTIALS environment variable.")
 else:
-    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set or invalid.")
+    logger.error("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
+    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
+
 GS_BUCKET_NAME = "electronic-eagles"
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
@@ -163,6 +171,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+
 if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     MEDIA_URL = "/media/"

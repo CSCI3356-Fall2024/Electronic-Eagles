@@ -39,8 +39,7 @@ urlpatterns = [
     path('news/edit/<int:pk>/', views.edit_news_view, name='edit_news'),
     path('rewards/', views.rewards_view, name='rewards'),
     path('validate-campaign/<uuid:campaign_id>/', views.validate_campaign, name='validate_campaign'),
-
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

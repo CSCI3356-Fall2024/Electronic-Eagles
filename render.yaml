@@ -1,5 +1,5 @@
 databases:
-  - name: Eags-DB
+  - name: mysitedb
     plan: free
     databaseName: mysite
     user: mysite
@@ -10,7 +10,7 @@ services:
     name: Electronic-Eagles
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "cd delivery3 && python3 -m gunicorn MyTestProject.asgi -k uvicorn.workers.UvicornWorker"
+    startCommand: "cd delivery3 && gunicorn MyTestProject.asgi -k uvicorn.workers.UvicornWorker"
     envVars:
       - key: DATABASE_URL
         fromDatabase:

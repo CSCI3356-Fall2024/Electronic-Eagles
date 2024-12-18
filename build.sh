@@ -2,6 +2,9 @@
 # Exit on error
 set -o errexit
 
+# Navigate to the directory containing manage.py
+cd delivery3
+
 # Modify this line as needed for your package manager (pip, poetry, etc.)
 pip install -r requirements.txt
 

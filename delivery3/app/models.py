@@ -43,8 +43,19 @@ class Campaign(models.Model):
 
     def clean(self):
         super().clean()
-        if self.start_time > self.end_time:
-            raise ValidationError("Start date cannot be after end date.")
+
+        # For non-permanent campaigns, validate start_time and end_time
+        if not self.permanent:
+            if self.start_time and self.end_time:  # Ensure both are set
+                if self.start_time > self.end_time:
+                    raise ValidationError("Start date cannot be after end date.")
+            else:
+                raise ValidationError("Non-permanent campaigns must have both start and end times.")
+
+        # For permanent campaigns, ensure start_time and end_time are None
+        if self.permanent:
+            if self.start_time or self.end_time:
+                raise ValidationError("Permanent campaigns cannot have start or end times.")
 
     def save(self, *args, **kwargs):
         # Generate QR code if it doesn't exist

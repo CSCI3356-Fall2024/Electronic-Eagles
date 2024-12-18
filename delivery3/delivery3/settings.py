@@ -171,8 +171,6 @@ ACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_ON_GET = True
 
-#'client_id': '918539851473-ocap3e897npg27jnt9s71vbksuk35u4r.apps.googleusercontent.com',
-#'secret': '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',
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

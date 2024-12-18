@@ -10,7 +10,7 @@ services:
     name: Electronic-Eagles
     runtime: python
     buildCommand: "./build.sh"
-    startCommand: "cd delivery3 && gunicorn MyTestProject.asgi -k uvicorn.workers.UvicornWorker"
+    startCommand: "cd delivery3 && gunicorn delivery3.asgi -k uvicorn.workers.UvicornWorker"
     envVars:
       - key: DATABASE_URL
         fromDatabase:

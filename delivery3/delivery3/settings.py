@@ -13,10 +13,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 from google.oauth2 import service_account
+import json
+import logging
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -29,14 +31,15 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'blest@bc.edu'
 EMAIL_HOST_PASSWORD = 'jvnw tkfl vunf lidu'
-# Application definition
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,24 +88,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'delivery3.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-import dj_database_url
-import os
-
-#DATABASES = {
-#    'default': dj_database_url.config(
-#        default='postgresql://postgres:project_password@localhost:5432/electronic_eagles',
-#        conn_max_age=600
-#    )
-#}
-
+# Database configuration
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mysite_4vqu',  
+        'USER': 'mysite',  
+        'PASSWORD': 'b3Ef7xI6WAtgNSqX0CIiAVxQTjF7bNaa',
+        'HOST': 'dpg-cth50hl2ng1s739kdsmg-a.oregon-postgres.render.com',
+        'PORT': '5432',
+    }
+}
 
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -118,24 +116,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = False
 
-#
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-# Static files settings
+# Static files configuration
 STATIC_URL = '/static/'
-
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -144,36 +132,47 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-#Google Cloud Storage
-# Read the environment variable containing the JSON string
-import json
-import logging
-
-# Ensure GOOGLE_APPLICATION_CREDENTIALS is set
-if os.getenv("GOOGLE_APPLICATION_CREDENTIALS"):
-    service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-    service_account_info = json.loads(service_account_json)
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
-else:
-    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is missing.")
-
-# Google Cloud Storage settings
-logger = logging.getLogger(__name__)
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_BUCKET_NAME = "electronic-eagles"
-MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-logger.debug(f"GOOGLE_APPLICATION_CREDENTIALS loaded: {service_account_json[:100]}")  # Truncated for safety
-logger.debug(f"Google credentials initialized: {GS_CREDENTIALS}")
-logger.debug(f"Active storage backend: {DEFAULT_FILE_STORAGE}")
-
-
+# Google Cloud Storage Configuration
+try:
+    GOOGLE_CREDS_JSON = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    if not GOOGLE_CREDS_JSON:
+        raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is missing")
+    
+    # Parse the JSON string and create credentials
+    credentials_dict = json.loads(GOOGLE_CREDS_JSON)
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credentials_dict)
+    
+    # Storage configuration
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = "electronic-eagles"
+    MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+    
+    # Optional: Configure additional GCS settings
+    GS_FILE_OVERWRITE = False
+    GS_DEFAULT_ACL = 'publicRead'
+    GS_MAX_MEMORY_SIZE = 5242880  # 5 MB
+    
+    # Log successful configuration
+    logger = logging.getLogger(__name__)
+    logger.info(f"GCS configured successfully with bucket: {GS_BUCKET_NAME}")
+    logger.debug(f"Storage backend: {DEFAULT_FILE_STORAGE}")
+    
+except Exception as e:
+    logger = logging.getLogger(__name__)
+    logger.error(f"Failed to configure Google Cloud Storage: {str(e)}")
+    if DEBUG:
+        # Fallback to FileSystem storage in development
+        DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+        MEDIA_URL = '/media/'
+        MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    else:
+        # In production, raise the error
+        raise
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#Django Allauth configuration
+# Django Allauth configuration
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -212,14 +211,13 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-
 ACCOUNT_FORMS = {'signup': 'app.forms.CustomSignupForm'}
-
 
 CSRF_TRUSTED_ORIGINS = [
     'https://your-base-domain'
 ]
 
+# Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -246,7 +244,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',  # Enable Django debug logs
+            'level': 'DEBUG',
             'propagate': False,
         },
         '__main__': {
@@ -254,22 +252,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        # Capture logs from your application
         'delivery3': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
     },
-}
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mysite_4vqu',  
-        'USER': 'mysite',  
-        'PASSWORD': 'b3Ef7xI6WAtgNSqX0CIiAVxQTjF7bNaa',  # Replace with your password
-        'HOST': 'dpg-cth50hl2ng1s739kdsmg-a.oregon-postgres.render.com',  # Replace with your host
-        'PORT': '5432',  # Default PostgreSQL port
-    }
 }

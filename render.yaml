@@ -20,3 +20,23 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+      # Google Cloud Storage
+      - key: DEFAULT_FILE_STORAGE
+        value: "storages.backends.gcloud.GoogleCloudStorage"
+      - key: GS_BUCKET_NAME
+        value: "electronic-eagles" 
+      - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
+        value: |
+          {
+            "type": "service_account",
+            "project_id": "electronic-eagles",
+            "private_key_id": "4c5d02b3abdc8fe677e33959019b2c8b447f4855",
+            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDDFC2tbPxB3YgS\ni95Tdd8odqVLzvxK2csKaIuM7WUAXmKbV+HzXh8b/wWx/X7G1K+6cHYBPL8VEYoW\nzA5ogb1LR2bgLGt03F0lJ5elvJxUh1D6lAPHf1mnW9VEVPFY7R/BFH112TUxXyqh\nLf7jRsAODfM32YL9Zyd28F0AJ7SAmj566ocPN8sc/+q1X0feIUfLR4VsO940HXV5\ncTs9PVTCaJbk+Ae0y0nSo/jzIc7sYdOLx0aQ4dPFz8XkSSvUorA3qR2unFmykB0b\nycl4WrYHjdKJScRlAN6qfWCiGvPIFqTtYI7B5oO2NjM31qrJfJKve1o45FIHJoIv\nRhmLZpTXAgMBAAECggEAA23XX7UKuh2qxqiuv8jSo2NyhGKfDLHHX+d2jIOfwuHl\n2dUxo5WD9noFH5vVHqmebSiM6nim4zfrtXrgxfWB3lDi/g3J1cQJ3x1TDRbDqLi4\nM69mYZtbeBWlKg5UL7v7UumJSwkGZlfF6A9m65fSyGx2WgT4yHuHtg+Dkv0fryL/\nFzqZIrja4Du9Z+JKV0oB8NaQliM32bhf0GjfwSUikbX2iD1e5z6dtLoeLRav5ai4\nfDVUsTYDi0AM0zW9gakwej459q9fDUbw61wZze62vRh/75liDlV35RgXXGSOhqSt\nsNp4dX11pXkw8rlQ4r0uK7szvXGfFa/G0oyHwyTUAQKBgQDtZ0WR64FlSaKPS5bo\nXFhHF69VL5P1jkOI2bpZ6EcLdEfy5owl3wHMgTtnDYdTHGsM7RwY/Prap/XdDSDl\n9Xs40qs1OG/lyTOu1BZ+Juz+RjMOgGkcYunjcZ0N+YYnuwO33Mn8kFvcYmJw9uae\nQm/20pdKRgQ2QyCvAWqWAFCdJQKBgQDSXChun7bueQFv8PYZ0pi6vF77ouvpVAYH\nHcifGvySc1eynY3Zsshjr6t69kzuZvATvydsH77OK0ZWVpZWATjE2pz5JeCC4OsN\nxM6XT4kfzDDCPCPYEjIKpxn/4mCXyM5oR6nVwgERV6QcDOEGSwjZ4etKeMuL62ML\njRzHK9fvSwKBgAkIyw74hV4TZUpKuB1zljBuaE+3lcvcdBl7H6pYOovnCu3ldCPk\nzq63pEkRrLqu9CvzwgP5bJpxldupqjzWELBi4/0MfsWh2IOosopudMpgZYUBwf5A\njWIIas+jVUWhykxu7Ijd/YDvhYuC+de/837TGMrMy1A9UbsXNLUsoeS5AoGAEIfJ\nbZgDag38PO20iSbxdYsj86ZD35wItTpz73zRaDjEJXcYFIlmEd9WHF2Kghl4uDSH\nRongFpdz+YjoW23RJjb/qtx9HgvKrNRQX7eSUPtcwYa0UmBrqkajVmZVrNfM0IkB\nIZkTOGeor8ObU0FGOsj0EnAXnrEqoVe/cS9S0q0CgYEA6f7qgo8oMq+L4O/ej/YN\nCbakhjV/swDdSVsRvnI9ChohbB3Ia1eK/nV4Ag2SKrrYyuuNpS6I2WoT/DgVArha\nYSIiQj57C5Og7qeJDAZDa/micdLksWiz6sJ0eji2PZhi7ukWX7ZMDTk2+lwut9vc\nHOVcyIIWDvjv5VqUQS6j72Q=\n-----END PRIVATE KEY-----\n",
+            "client_email": "electronic-eagles-service-acco@electronic-eagles.iam.gserviceaccount.com",
+            "client_id": "109606265570902599790",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/electronic-eagles-service-acco%40electronic-eagles.iam.gserviceaccount.com",
+            "universe_domain": "googleapis.com"
+          }

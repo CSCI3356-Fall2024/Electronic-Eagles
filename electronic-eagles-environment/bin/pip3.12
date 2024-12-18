@@ -1,4 +1,4 @@
-#!/home/haydenw/Electronic-Eagles/electronic-eagles-environment/bin/python3
+#!/home/haydenw/Electronic-Eagles/electronic-eagles-environment/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -133,30 +133,7 @@ USE_TZ = False
 
 
 
-# Google Cloud Storage
-# Read the environment variable containing the JSON string
-import json
-import logging
-
-logger = logging.getLogger(__name__)
-
-service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-
-if service_account_json:
-    logger.debug(f"GOOGLE_APPLICATION_CREDENTIALS is set. Value (truncated): {service_account_json[:100]}")
-    try:
-        service_account_info = json.loads(service_account_json)
-        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
-    except json.JSONDecodeError:
-        raise ValueError("Invalid JSON in GOOGLE_APPLICATION_CREDENTIALS environment variable.")
-else:
-    logger.error("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
-    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
-
-GS_BUCKET_NAME = "electronic-eagles"
-
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-
+#
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 # Static files settings
@@ -170,11 +147,38 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+GS_BUCKET_NAME = "electronic-eagles"
+
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 
 if DEBUG:
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
     MEDIA_URL = "/media/"
+
+#Google Cloud Storage
+# Read the environment variable containing the JSON string
+import json
+import logging
+
+logger = logging.getLogger(__name__)
+
+service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+if service_account_json:
+    print(f"DEBUG: GOOGLE_APPLICATION_CREDENTIALS is set. Value (truncated): {service_account_json[:100]}")
+    logger.debug(f"GOOGLE_APPLICATION_CREDENTIALS is set. Value (truncated): {service_account_json[:100]}")
+    try:
+        service_account_info = json.loads(service_account_json)
+        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
+    except json.JSONDecodeError:
+        raise ValueError("Invalid JSON in GOOGLE_APPLICATION_CREDENTIALS environment variable.")
+else:
+    logger.error("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
+    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -231,14 +235,43 @@ CSRF_TRUSTED_ORIGINS = [
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG',  # Log all details
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Enable Django debug logs
+            'propagate': False,
+        },
+        '__main__': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Capture logs from your application
+        'delivery3': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 

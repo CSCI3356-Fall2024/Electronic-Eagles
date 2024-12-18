@@ -144,37 +144,31 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-import logging
-from django.core.files.storage import default_storage
-logger = logging.getLogger(__name__)
-logger.debug(f"Using storage backend: {default_storage.__class__.__name__}")
-
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-
-logger.debug(f"Using storage backend: {default_storage.__class__.__name__}")
-
-GS_BUCKET_NAME = "electronic-eagles"
-
-MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-
 #Google Cloud Storage
 # Read the environment variable containing the JSON string
 import json
-
+import logging
 
 service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 
 if service_account_json:
-    print(f"DEBUG: GOOGLE_APPLICATION_CREDENTIALS is set. Value (truncated): {service_account_json[:100]}")
-    logger.debug(f"GOOGLE_APPLICATION_CREDENTIALS is set. Value (truncated): {service_account_json[:100]}")
     try:
+        # Parse JSON string into credentials
         service_account_info = json.loads(service_account_json)
         GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
     except json.JSONDecodeError:
         raise ValueError("Invalid JSON in GOOGLE_APPLICATION_CREDENTIALS environment variable.")
 else:
-    logger.error("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
     raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
+
+# Google Cloud Storage settings
+logger = logging.getLogger(__name__)
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = "electronic-eagles"
+MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+logger.debug(f"GOOGLE_APPLICATION_CREDENTIALS loaded: {service_account_json[:100]}")  # Truncated for safety
+logger.debug(f"Google credentials initialized: {GS_CREDENTIALS}")
+logger.debug(f"Active storage backend: {DEFAULT_FILE_STORAGE}")
 
 
 

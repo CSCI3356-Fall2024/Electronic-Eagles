@@ -2,6 +2,11 @@
 # Exit on error
 set -o errexit
 
+echo "Setting up environment variables..."
+export DEFAULT_FILE_STORAGE="storages.backends.gcloud.GoogleCloudStorage"
+export GS_BUCKET_NAME="electronic-eagles"
+export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_APPLICATION_CREDENTIALS"
+
 # Navigate to the directory containing manage.py
 cd delivery3
 

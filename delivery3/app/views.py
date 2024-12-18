@@ -93,9 +93,12 @@ def landing_page(request):
         ).order_by('-start_time')
         if not profile.is_complete:
             return redirect('profile_setup')
+        
+        top_users = UserProfile.objects.order_by('-points')[:5]
     return render(request, 'landing_page.html', {
         'featured_campaigns' : featured_campaigns,
         'news' : news,
+        'top_users': top_users,
     })
 
 

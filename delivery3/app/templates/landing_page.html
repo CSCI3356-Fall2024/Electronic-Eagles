@@ -30,11 +30,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>{{ user.userprofile.name }}</td>
-                                <td>{{ user.userprofile.points }}</td>
-                            </tr>
+                            {% for user_profile in top_users %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ user_profile.name }}</td>
+                                    <td>{{ user_profile.points }}</td>
+                                </tr>
+                            {% empty %} 
+                                <tr>
+                                    <td colspan="3" class="text-center">No users available.</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'app',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -129,9 +131,18 @@ USE_I18N = True
 USE_TZ = False
 
 
+
+
+# Google Cloud Storage
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.getenv("GOOGLE_APPLICATION_CREDENTIALS")  # Path to your JSON key file
+)
+GS_BUCKET_NAME = "electronic-eagles"
+
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 # Static files settings
 STATIC_URL = '/static/'
 

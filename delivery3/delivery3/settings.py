@@ -122,32 +122,15 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = False
 
-# Static files configuration
-STATIC_URL = '/static/'
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# Google Cloud Storage Configuration
 # GCS Credentials
-from storages.backends.gcloud import GoogleCloudStorage
 GOOGLE_CREDS_JSON = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 credentials_dict = json.loads(GOOGLE_CREDS_JSON)
 GS_CREDENTIALS = service_account.Credentials.from_service_account_info(credentials_dict)
 
-# Create storage instance
+# Bucket settings
 GS_BUCKET_NAME = 'electronic-eagles'
-STORAGE_INSTANCE = GoogleCloudStorage(
-    credentials=GS_CREDENTIALS,
-    bucket_name=GS_BUCKET_NAME
-)
 
-# Force Django to use our storage instance
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+# Storage configuration
 STORAGES = {
     'default': {
         'BACKEND': 'storages.backends.gcloud.GoogleCloudStorage',
@@ -158,8 +141,25 @@ STORAGES = {
     },
 }
 
-# Media settings
+# Only configure staticfiles in production
+if not DEBUG:
+    STORAGES['staticfiles'] = {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    }
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Keep existing static files configuration
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# Media URL for GCS
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
+
+# Keep the original DEFAULT_FILE_STORAGE setting
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

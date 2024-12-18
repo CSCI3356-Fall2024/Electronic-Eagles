@@ -130,9 +130,6 @@ USE_I18N = True
 
 USE_TZ = False
 
-
-
-
 #
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -147,22 +144,23 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+import logging
+from django.core.files.storage import default_storage
+logger = logging.getLogger(__name__)
+logger.debug(f"Using storage backend: {default_storage.__class__.__name__}")
+
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+logger.debug(f"Using storage backend: {default_storage.__class__.__name__}")
 
 GS_BUCKET_NAME = "electronic-eagles"
 
 MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
 
-if DEBUG:
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-    MEDIA_URL = "/media/"
-
 #Google Cloud Storage
 # Read the environment variable containing the JSON string
 import json
-import logging
 
-logger = logging.getLogger(__name__)
 
 service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 

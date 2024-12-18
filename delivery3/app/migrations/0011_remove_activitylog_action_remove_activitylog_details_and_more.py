@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name="activity_type",
             field=models.CharField(
                 choices=[("EARNED", "Earned Points"), ("REDEEMED", "Redeemed Points")],
-                default="Default Action",
+                default="Default",
                 max_length=10,
             ),
         ),

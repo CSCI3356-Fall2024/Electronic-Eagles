@@ -93,8 +93,8 @@ class ActivityLog(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    activity_type = models.CharField(max_length=10, choices=ACTIVITY_CHOICES, default="Default Action")
-    points = models.CharField(default="0", max_length=10)
+    activity_type = models.CharField(max_length=10, choices=ACTIVITY_CHOICES, default="Default")
+    points = models.CharField(default="0", max_length=100)
     description = models.TextField(default="Default Action")
     timestamp = models.DateTimeField(auto_now_add=True)
 

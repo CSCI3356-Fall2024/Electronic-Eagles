@@ -193,4 +193,7 @@ SOCIALACCOUNT_PROVIDERS = {
 ACCOUNT_FORMS = {'signup': 'app.forms.CustomSignupForm'}
 
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://your-base-domain'
+]
 

@@ -149,17 +149,13 @@ STATICFILES_DIRS = [
 import json
 import logging
 
-service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-
-if service_account_json:
-    try:
-        # Parse JSON string into credentials
-        service_account_info = json.loads(service_account_json)
-        GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
-    except json.JSONDecodeError:
-        raise ValueError("Invalid JSON in GOOGLE_APPLICATION_CREDENTIALS environment variable.")
+# Ensure GOOGLE_APPLICATION_CREDENTIALS is set
+if os.getenv("GOOGLE_APPLICATION_CREDENTIALS"):
+    service_account_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    service_account_info = json.loads(service_account_json)
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(service_account_info)
 else:
-    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is not set.")
+    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS environment variable is missing.")
 
 # Google Cloud Storage settings
 logger = logging.getLogger(__name__)
